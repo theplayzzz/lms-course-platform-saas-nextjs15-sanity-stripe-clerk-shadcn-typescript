@@ -106,7 +106,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             priority
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-background/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black to-black/60" />
         <div className="absolute inset-0 container mx-auto px-4 flex flex-col justify-end pb-12">
           <Link
             href="/"
@@ -118,20 +118,26 @@ export default async function CoursePage({ params }: CoursePageProps) {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                <span className="px-3 py-1 bg-white/10 text-white rounded-full text-sm font-medium backdrop-blur-sm">
                   {course.category?.name || "Uncategorized"}
                 </span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 {course.title}
               </h1>
-              <p className="text-lg text-white/80 max-w-2xl">
+              <p className="text-lg text-white/90 max-w-2xl">
                 {course.description}
               </p>
             </div>
-            <div className="bg-card rounded-lg p-6 md:min-w-[300px]">
-              <div className="text-3xl font-bold mb-4">${course.price}</div>
-              <button className="w-full bg-primary text-primary-foreground rounded-lg px-6 py-3 font-medium hover:bg-primary/90 transition-colors">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 md:min-w-[300px]">
+              <div className="text-3xl font-bold text-white mb-4">
+                ${course.price}
+              </div>
+              <button
+                className="w-full bg-white text-black rounded-lg px-6 py-3 font-medium transition-all duration-300 ease-in-out
+                hover:scale-105 hover:shadow-lg hover:shadow-black/10
+              "
+              >
                 Enroll Now
               </button>
             </div>
@@ -144,7 +150,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="bg-card rounded-lg p-6 mb-8">
+            <div className="bg-card rounded-lg p-6 mb-8 border border-border">
               <h2 className="text-2xl font-bold mb-4">Course Content</h2>
               <div className="space-y-4">
                 {course.modules?.map((module, index) => (
@@ -176,7 +182,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
           {/* Sidebar */}
           <div>
-            <div className="bg-card rounded-lg p-6 sticky top-4">
+            <div className="bg-card rounded-lg p-6 sticky top-4 border border-border">
               <h2 className="text-xl font-bold mb-4">Instructor</h2>
               {course.instructor && (
                 <div>
