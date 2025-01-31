@@ -312,30 +312,11 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes =
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | Geopoint
-  | Enrollment
-  | Student
-  | BlockContent
-  | Lesson
-  | SanityFileAsset
-  | Module
-  | Course
-  | Instructor
-  | Category
-  | SanityImageCrop
-  | SanityImageHotspot
-  | SanityImageAsset
-  | SanityAssetSourceData
-  | SanityImageMetadata
-  | Slug;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | Geopoint | Enrollment | Student | BlockContent | Lesson | SanityFileAsset | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: actions/createStripeCheckout.ts
 // Variable: getCourseQuery
-// Query: *[_type == "course" && _id == $courseId][0]{        _id,        title,        price,        description,        "imageUrl": image.asset->url      }
+// Query: *[_type == "course" && _id == $courseId][0]{    _id,        title,        price,        description,        "imageUrl": image.asset->url      }
 export type GetCourseQueryResult = {
   _id: string;
   title: string | null;
@@ -348,6 +329,6 @@ export type GetCourseQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "course" && _id == $courseId][0]{\n        _id,\n        title,\n        price,\n        description,\n        "imageUrl": image.asset->url\n      }': GetCourseQueryResult;
+    "*[_type == \"course\" && _id == $courseId][0]{\n    _id,\n        title,\n        price,\n        description,\n        \"imageUrl\": image.asset->url\n      }": GetCourseQueryResult;
   }
 }

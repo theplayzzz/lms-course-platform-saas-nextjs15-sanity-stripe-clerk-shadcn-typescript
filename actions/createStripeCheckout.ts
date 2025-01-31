@@ -1,14 +1,15 @@
 "use server";
 
-import groq, { defineQuery } from "groq";
+import { defineQuery } from "groq";
 import { client } from "@/sanity/lib/client";
 import { GetCourseQueryResult } from "@/sanity.types";
 import stripe from "@/lib/stripe";
+import baseUrl from "@/lib/baseUrl";
 
 export async function createStripeCheckout(courseId: string, userId: string) {
   try {
     const getCourseQuery = defineQuery(
-      groq`*[_type == "course" && _id == $courseId][0]{
+      `*[_type == "course" && _id == $courseId][0]{
     _id,
         title,
         price,
@@ -54,8 +55,8 @@ export async function createStripeCheckout(courseId: string, userId: string) {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/courses/${course._id}?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/courses/${course._id}?canceled=true`,
+      success_url: `${baseUrl}/courses/${course._id}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/courses/${course._id}?canceled=true`,
       metadata: {
         courseId: course._id,
         userId: userId,
