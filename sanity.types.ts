@@ -312,31 +312,23 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes =
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | Geopoint
-  | Enrollment
-  | Student
-  | BlockContent
-  | Lesson
-  | SanityFileAsset
-  | Module
-  | Course
-  | Instructor
-  | Category
-  | SanityImageCrop
-  | SanityImageHotspot
-  | SanityImageAsset
-  | SanityAssetSourceData
-  | SanityImageMetadata
-  | Slug;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | Geopoint | Enrollment | Student | BlockContent | Lesson | SanityFileAsset | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
 export declare const internalGroqTypeReferenceTo: unique symbol;
+// Source: actions/createStripeCheckout.ts
+// Variable: getCourseQuery
+// Query: *[_type == "course" && _id == $courseId][0]{    _id,        title,        price,        description,        "imageUrl": image.asset->url      }
+export type GetCourseQueryResult = {
+  _id: string;
+  title: string | null;
+  price: number | null;
+  description: string | null;
+  imageUrl: string | null;
+} | null;
+
 // Source: app/page.tsx
-// Variable: query
+// Variable: getCoursesQuery
 // Query: *[_type == "course"] {    _id,    title,    description,    price,    "slug": slug.current,    image,    "category": category->{      name    },    "instructor": instructor->{      name,      photo    }  }
-export type QueryResult = Array<{
+export type GetCoursesQueryResult = Array<{
   _id: string;
   title: string | null;
   description: string | null;
@@ -372,22 +364,11 @@ export type QueryResult = Array<{
   } | null;
 }>;
 
-// Source: actions/createStripeCheckout.ts
-// Variable: getCourseQuery
-// Query: *[_type == "course" && _id == $courseId][0]{    _id,        title,        price,        description,        "imageUrl": image.asset->url      }
-export type GetCourseQueryResult = {
-  _id: string;
-  title: string | null;
-  price: number | null;
-  description: string | null;
-  imageUrl: string | null;
-} | null;
-
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "course"] {\n    _id,\n    title,\n    description,\n    price,\n    "slug": slug.current,\n    image,\n    "category": category->{\n      name\n    },\n    "instructor": instructor->{\n      name,\n      photo\n    }\n  }': QueryResult;
-    '*[_type == "course" && _id == $courseId][0]{\n    _id,\n        title,\n        price,\n        description,\n        "imageUrl": image.asset->url\n      }': GetCourseQueryResult;
+    "*[_type == \"course\" && _id == $courseId][0]{\n    _id,\n        title,\n        price,\n        description,\n        \"imageUrl\": image.asset->url\n      }": GetCourseQueryResult;
+    "*[_type == \"course\"] {\n    _id,\n    title,\n    description,\n    price,\n    \"slug\": slug.current,\n    image,\n    \"category\": category->{\n      name\n    },\n    \"instructor\": instructor->{\n      name,\n      photo\n    }\n  }": GetCoursesQueryResult;
   }
 }
