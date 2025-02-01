@@ -29,6 +29,23 @@ export function Sidebar({ course }: SidebarProps) {
   const pathname = usePathname();
   const { isOpen, toggle, close } = useSidebar();
   const [isMounted, setIsMounted] = useState(false);
+  const [openModules, setOpenModules] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (pathname && course?.modules) {
+      const currentModuleId = course.modules.find((module) =>
+        module.lessons?.some(
+          (lesson) =>
+            pathname ===
+            `/dashboard/courses/${course._id}/lessons/${lesson._id}`
+        )
+      )?._id;
+
+      if (currentModuleId && !openModules.includes(currentModuleId)) {
+        setOpenModules((prev) => [...prev, currentModuleId]);
+      }
+    }
+  }, [pathname, course, openModules]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -65,12 +82,20 @@ export function Sidebar({ course }: SidebarProps) {
       </div>
       <ScrollArea className="flex-1">
         <div className="p-2 lg:p-4">
-          <Accordion type="multiple" className="w-full space-y-4">
+          <Accordion
+            type="multiple"
+            className="w-full space-y-4"
+            value={openModules}
+            onValueChange={setOpenModules}
+          >
             {course.modules?.map((module, moduleIndex) => (
               <AccordionItem
                 key={module._id}
                 value={module._id}
-                className="border-none"
+                className={cn(
+                  "border-none",
+                  moduleIndex % 2 === 0 ? "bg-muted/30" : "bg-background"
+                )}
               >
                 <AccordionTrigger className="px-2 py-2 hover:no-underline transition-colors">
                   <div className="flex items-center gap-x-2 lg:gap-x-4 w-full">
@@ -182,9 +207,9 @@ export function Sidebar({ course }: SidebarProps) {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 bg-background transition-all duration-300 ease-in-out",
-          "lg:z-50 lg:block lg:w-80 lg:border-r",
+          "lg:z-50 lg:block lg:w-96 lg:border-r",
           isOpen
-            ? "w-[calc(100%-60px)] translate-x-[60px]  lg:translate-x-0 lg:w-80"
+            ? "w-[calc(100%-60px)] translate-x-[60px] lg:translate-x-0 lg:w-96"
             : "translate-x-[-100%] lg:translate-x-0"
         )}
       >

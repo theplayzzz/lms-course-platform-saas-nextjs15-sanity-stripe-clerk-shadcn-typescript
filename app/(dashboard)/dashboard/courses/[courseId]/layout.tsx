@@ -13,7 +13,9 @@ export default async function CourseLayout({
   children,
   params,
 }: CourseLayoutProps) {
-  const course = await getCourseById(params.courseId);
+  const { courseId } = await params;
+
+  const course = await getCourseById(courseId);
 
   if (!course) {
     return redirect("/");
@@ -22,7 +24,7 @@ export default async function CourseLayout({
   return (
     <div className="h-full relative">
       <Sidebar course={course} />
-      <main className="h-full pl-[60px] lg:pl-80">
+      <main className="h-full pl-[60px] lg:pl-96">
         <div className="h-full max-w-7xl mx-auto">{children}</div>
       </main>
     </div>
