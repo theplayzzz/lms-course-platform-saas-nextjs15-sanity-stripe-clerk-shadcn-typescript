@@ -1,15 +1,15 @@
 "use server";
 
-import { GetCourseQueryResult } from "@/sanity.types";
 import stripe from "@/lib/stripe";
 import baseUrl from "@/lib/baseUrl";
-import getCourse from "@/sanity/lib/courses/getCourse";
+
 import { urlFor } from "@/sanity/lib/image";
+import getCourseById from "@/sanity/lib/courses/getCourseById";
 
 export async function createStripeCheckout(courseId: string, userId: string) {
   try {
     // 1. Query course details from Sanity
-    const course: GetCourseQueryResult = await getCourse(courseId);
+    const course = await getCourseById(courseId);
 
     if (!course) {
       throw new Error("Course not found");

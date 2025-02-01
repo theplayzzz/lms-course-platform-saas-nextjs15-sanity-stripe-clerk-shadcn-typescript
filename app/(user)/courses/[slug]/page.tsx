@@ -2,8 +2,8 @@ import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
-
-import getCourse from "@/sanity/lib/courses/getCourse";
+import EnrollButton from "@/components/EnrollButton";
+import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
 
 interface CoursePageProps {
   params: {
@@ -13,8 +13,7 @@ interface CoursePageProps {
 
 export default async function CoursePage({ params }: CoursePageProps) {
   const { slug } = await params;
-
-  const course = await getCourse(slug);
+  const course = await getCourseBySlug(slug);
 
   if (!course) {
     return (
@@ -64,13 +63,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
               <div className="text-3xl font-bold text-white mb-4">
                 ${course.price}
               </div>
-              <button
-                className="w-full bg-white text-black rounded-lg px-6 py-3 font-medium transition-all duration-300 ease-in-out
-                hover:scale-105 hover:shadow-lg hover:shadow-black/10
-              "
-              >
-                Enroll Now
-              </button>
+              <EnrollButton courseId={course._id} />
             </div>
           </div>
         </div>
