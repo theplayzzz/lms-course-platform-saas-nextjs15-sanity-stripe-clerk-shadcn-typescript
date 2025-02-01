@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { defineField, defineType } from "sanity";
 
 export const enrollmentType = defineType({
@@ -61,13 +62,20 @@ export const enrollmentType = defineType({
       courseTitle: "course.title",
       studentFirstName: "student.firstName",
       studentLastName: "student.lastName",
-      studentImage: "student.profileImage",
+      studentImage: "student.imageUrl",
     },
     prepare({ courseTitle, studentFirstName, studentLastName, studentImage }) {
       return {
         title: courseTitle,
         subtitle: `${studentFirstName} ${studentLastName}`,
-        media: studentImage,
+        media: (
+          <Image
+            src={studentImage}
+            alt={`${studentFirstName} ${studentLastName}`}
+            width={100}
+            height={100}
+          />
+        ),
       };
     },
   },

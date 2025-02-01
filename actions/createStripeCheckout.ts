@@ -5,14 +5,36 @@ import baseUrl from "@/lib/baseUrl";
 
 import { urlFor } from "@/sanity/lib/image";
 import getCourseById from "@/sanity/lib/courses/getCourseById";
+import { createStudentIfNotExists } from "@/sanity/lib/student/createStudentIfNotExists";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export async function createStripeCheckout(courseId: string, userId: string) {
   try {
     // 1. Query course details from Sanity
     const course = await getCourseById(courseId);
+    const clerkUser = await (await clerkClient()).users.getUser(userId);
+    const { emailAddresses, firstName, lastName, imageUrl } = clerkUser;
+    const email = emailAddresses[0]?.emailAddress;
+
+    if (!emailAddresses || !email || !firstName || !lastName || !imageUrl) {
+      throw new Error("User details not found");
+    }
 
     if (!course) {
       throw new Error("Course not found");
+    }
+
+    // mid step - create a user in sanity if it doesn't exist
+    const user = await createStudentIfNotExists({
+      clerkId: userId,
+      email: email || "",
+      firstName: firstName || "",
+      lastName: lastName || "",
+      imageUrl: imageUrl || "",
+    });
+
+    if (!user) {
+      throw new Error("User not found");
     }
 
     // 2. Validate course data and prepare price for Stripe
@@ -21,9 +43,9 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     }
     const priceInCents = Math.round(course.price * 100);
 
-    const { title, description, image } = course;
+    const { title, description, image, slug } = course;
 
-    if (!title || !description || !image) {
+    if (!title || !description || !image || !slug) {
       throw new Error("Course data is incomplete");
     }
 
@@ -44,8 +66,8 @@ export async function createStripeCheckout(courseId: string, userId: string) {
         },
       ],
       mode: "payment",
-      success_url: `${baseUrl}/courses/${course._id}?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/courses/${course._id}?canceled=true`,
+      success_url: `${baseUrl}/courses/${slug.current}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/courses/${slug.current}?canceled=true`,
       metadata: {
         courseId: course._id,
         userId: userId,

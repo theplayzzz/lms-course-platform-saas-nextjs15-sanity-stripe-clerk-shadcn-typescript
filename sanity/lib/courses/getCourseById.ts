@@ -6,6 +6,7 @@ async function getCourseById(id: string) {
     defineQuery(`*[_type == "course" && _id == $id][0] {
       _id,
       title,
+      slug,
       description,
       price,
       image,
