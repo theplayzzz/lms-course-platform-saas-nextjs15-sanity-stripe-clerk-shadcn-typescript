@@ -1,6 +1,8 @@
 import Link from "next/link";
 import DarkModeToggle from "./DarkModeToggle";
 import { BookOpen } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { Button } from "./ui/button";
 
 function Header() {
   return (
@@ -46,12 +48,16 @@ function Header() {
 
           <div className="flex items-center space-x-4">
             <DarkModeToggle />
-            <Link
-              href="#"
-              className="hidden md:block bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              Sign In
-            </Link>
+
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+
+            <SignedOut>
+              <SignInButton>
+                <Button>Sign In</Button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </div>
