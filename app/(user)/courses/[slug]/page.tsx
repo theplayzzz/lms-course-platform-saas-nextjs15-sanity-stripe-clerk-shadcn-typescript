@@ -1,10 +1,9 @@
-import { sanityFetch } from "@/sanity/lib/live";
 import { urlFor } from "@/sanity/lib/image";
-import { defineQuery } from "groq";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
-import { SanityImageSource } from "@sanity/image-url/lib/types/types";
+
+import getCourse from "@/sanity/lib/courses/getCourse";
 
 interface CoursePageProps {
   params: {
@@ -12,78 +11,10 @@ interface CoursePageProps {
   };
 }
 
-type Lesson = {
-  _id: string;
-  title: string;
-  content: string;
-  videoUrl?: string;
-};
-
-type Module = {
-  _id: string;
-  title: string;
-  lessons?: Lesson[];
-};
-
-type Course = {
-  _id: string;
-  title: string;
-  description: string;
-  price: number;
-  image: SanityImageSource;
-  category?: {
-    _id: string;
-    name: string;
-  };
-  instructor?: {
-    _id: string;
-    name: string;
-    bio?: string;
-    photo: SanityImageSource;
-  };
-  modules?: Module[];
-};
-
-async function getCourse(slug: string) {
-  const getCourseQuery =
-    defineQuery(`*[_type == "course" && slug.current == $slug][0] {
-    _id,
-    title,
-    description,
-    price,
-    image,
-    "category": category->{
-      name,
-      _id
-    },
-    "instructor": instructor->{
-      _id,
-      name,
-      bio,
-      photo
-    },
-    "modules": modules[]->{
-      _id,
-      title,
-      "lessons": lessons[]->{
-        _id,
-        title,
-        content,
-        videoUrl
-      }
-    }
-  }`);
-
-  const course = await sanityFetch({
-    query: getCourseQuery,
-    params: { slug },
-  });
-
-  return course.data as Course;
-}
-
 export default async function CoursePage({ params }: CoursePageProps) {
-  const course = await getCourse(params.slug);
+  const { slug } = await params;
+
+  const course = await getCourse(slug);
 
   if (!course) {
     return (
@@ -100,7 +31,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
         {course.image && (
           <Image
             src={urlFor(course.image).url() || ""}
-            alt={course.title}
+            alt={course.title || "Course Title"}
             fill
             className="object-cover"
             priority
@@ -163,14 +94,23 @@ export default async function CoursePage({ params }: CoursePageProps) {
                         Module {index + 1}: {module.title}
                       </h3>
                     </div>
-                    <div className="p-4 space-y-2">
-                      {module.lessons?.map((lesson) => (
+                    <div className="divide-y divide-border">
+                      {module.lessons?.map((lesson, lessonIndex) => (
                         <div
                           key={lesson._id}
-                          className="flex items-center gap-3 text-muted-foreground"
+                          className="p-4 hover:bg-muted/50 transition-colors"
                         >
-                          <BookOpen className="h-4 w-4" />
-                          <span>{lesson.title}</span>
+                          <div className="flex items-center gap-4">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-medium">
+                              {lessonIndex + 1}
+                            </div>
+                            <div className="flex items-center gap-3 text-foreground">
+                              <BookOpen className="h-4 w-4 text-muted-foreground" />
+                              <span className="font-medium">
+                                {lesson.title}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -191,7 +131,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                       <div className="relative h-12 w-12">
                         <Image
                           src={urlFor(course.instructor.photo).url() || ""}
-                          alt={course.instructor.name}
+                          alt={course.instructor.name || "Course Instructor"}
                           fill
                           className="rounded-full object-cover"
                         />

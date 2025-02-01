@@ -1,26 +1,15 @@
 "use server";
 
-import { defineQuery } from "groq";
-import { client } from "@/sanity/lib/client";
 import { GetCourseQueryResult } from "@/sanity.types";
 import stripe from "@/lib/stripe";
 import baseUrl from "@/lib/baseUrl";
+import getCourse from "@/sanity/lib/courses/getCourse";
+import { urlFor } from "@/sanity/lib/image";
 
 export async function createStripeCheckout(courseId: string, userId: string) {
   try {
-    const getCourseQuery = defineQuery(
-      `*[_type == "course" && _id == $courseId][0]{
-    _id,
-        title,
-        price,
-        description,
-        "imageUrl": image.asset->url
-      }`
-    );
     // 1. Query course details from Sanity
-    const course: GetCourseQueryResult = await client.fetch(getCourseQuery, {
-      courseId,
-    });
+    const course: GetCourseQueryResult = await getCourse(courseId);
 
     if (!course) {
       throw new Error("Course not found");
@@ -32,9 +21,9 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     }
     const priceInCents = Math.round(course.price * 100);
 
-    const { title, description, imageUrl } = course;
+    const { title, description, image } = course;
 
-    if (!title || !description || !imageUrl) {
+    if (!title || !description || !image) {
       throw new Error("Course data is incomplete");
     }
 
@@ -47,7 +36,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
             product_data: {
               name: title,
               description: description,
-              images: [imageUrl || ""],
+              images: [urlFor(image).url() || ""],
             },
             unit_amount: priceInCents,
           },
