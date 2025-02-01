@@ -65,7 +65,6 @@ export async function POST(req: Request) {
         },
         paymentId: session.id,
         amount: session.amount_total! / 100, // Convert from cents to dollars
-        status: "completed",
         enrolledAt: new Date().toISOString(),
       });
 

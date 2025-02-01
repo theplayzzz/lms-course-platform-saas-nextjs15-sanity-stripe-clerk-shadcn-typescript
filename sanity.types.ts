@@ -64,11 +64,9 @@ export type Enrollment = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "course";
   };
+  amount?: number;
+  paymentId?: string;
   enrolledAt?: string;
-  completedAt?: string;
-  progress?: number;
-  lastAccessedAt?: string;
-  status?: "active" | "completed" | "dropped";
 };
 
 export type Student = {

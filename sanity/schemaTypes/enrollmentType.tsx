@@ -21,40 +21,24 @@ export const enrollmentType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "amount",
+      title: "Amount",
+      type: "number",
+      validation: (rule) => rule.required().min(0),
+      description: "The amount paid for the course enrollment in cents",
+    }),
+    defineField({
+      name: "paymentId",
+      title: "Payment ID",
+      type: "string",
+      validation: (rule) => rule.required(),
+      description: "The Stripe payment/checkout session ID",
+    }),
+    defineField({
       name: "enrolledAt",
       title: "Enrolled At",
       type: "datetime",
       initialValue: () => new Date().toISOString(),
-    }),
-    defineField({
-      name: "completedAt",
-      title: "Completed At",
-      type: "datetime",
-    }),
-    defineField({
-      name: "progress",
-      title: "Course Progress",
-      type: "number",
-      validation: (rule) => rule.min(0).max(100),
-      initialValue: 0,
-    }),
-    defineField({
-      name: "lastAccessedAt",
-      title: "Last Accessed At",
-      type: "datetime",
-    }),
-    defineField({
-      name: "status",
-      title: "Status",
-      type: "string",
-      options: {
-        list: [
-          { title: "Active", value: "active" },
-          { title: "Completed", value: "completed" },
-          { title: "Dropped", value: "dropped" },
-        ],
-      },
-      initialValue: "active",
     }),
   ],
   preview: {

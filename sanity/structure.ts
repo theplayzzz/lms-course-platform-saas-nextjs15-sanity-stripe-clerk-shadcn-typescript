@@ -8,19 +8,109 @@ export const structure = (S: StructureBuilder) =>
       // Course Content
       S.listItem()
         .title("Course Content")
-        .child(S.documentTypeList("course").title("Courses")),
+        .child(
+          S.documentTypeList("course")
+            .title("Courses")
+            .child((courseId) =>
+              S.list()
+                .title("Course Options")
+                .items([
+                  // Option to edit course content
+                  S.listItem()
+                    .title("Edit Course Content")
+                    .child(
+                      S.document().schemaType("course").documentId(courseId)
+                    ),
+                  // Option to view course enrollments
+                  S.listItem()
+                    .title("View Students")
+                    .child(
+                      S.documentList()
+                        .title("Course Enrollments")
+                        .filter(
+                          '_type == "enrollment" && course._ref == $courseId'
+                        )
+                        .params({ courseId })
+                    ),
+                ])
+            )
+        ),
 
       S.divider(),
 
       // Users
       S.listItem()
-        .title("Users")
+        .title("User Management")
         .child(
           S.list()
-            .title("Users")
+            .title("Select a Type of User")
             .items([
-              S.documentTypeListItem("instructor").title("Instructors"),
-              S.documentTypeListItem("student").title("Students"),
+              // Instructors with options
+              S.listItem()
+                .title("Instructors")
+                .schemaType("instructor")
+                .child(
+                  S.documentTypeList("instructor")
+                    .title("Instructors")
+                    .child((instructorId) =>
+                      S.list()
+                        .title("Instructor Options")
+                        .items([
+                          // Option to edit instructor details
+                          S.listItem()
+                            .title("Edit Instructor Details")
+                            .child(
+                              S.document()
+                                .schemaType("instructor")
+                                .documentId(instructorId)
+                            ),
+                          // Option to view instructor's courses
+                          S.listItem()
+                            .title("View Courses")
+                            .child(
+                              S.documentList()
+                                .title("Instructor's Courses")
+                                .filter(
+                                  '_type == "course" && instructor._ref == $instructorId'
+                                )
+                                .params({ instructorId })
+                            ),
+                        ])
+                    )
+                ),
+              // Students with options
+              S.listItem()
+                .title("Students")
+                .schemaType("student")
+                .child(
+                  S.documentTypeList("student")
+                    .title("Students")
+                    .child((studentId) =>
+                      S.list()
+                        .title("Student Options")
+                        .items([
+                          // Option to edit student details
+                          S.listItem()
+                            .title("Edit Student Details")
+                            .child(
+                              S.document()
+                                .schemaType("student")
+                                .documentId(studentId)
+                            ),
+                          // Option to view enrollments
+                          S.listItem()
+                            .title("View Enrollments")
+                            .child(
+                              S.documentList()
+                                .title("Student Enrollments")
+                                .filter(
+                                  '_type == "enrollment" && student._ref == $studentId'
+                                )
+                                .params({ studentId })
+                            ),
+                        ])
+                    )
+                ),
             ])
         ),
 
