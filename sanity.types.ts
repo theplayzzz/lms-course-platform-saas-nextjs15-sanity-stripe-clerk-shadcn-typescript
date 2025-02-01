@@ -341,6 +341,51 @@ export type GetCoursesQueryResult = Array<{
   } | null;
 }>;
 
+// Source: sanity/lib/student/getStudentByClerkId.ts
+// Variable: getStudentByClerkIdQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0]
+export type GetStudentByClerkIdQueryResult = {
+  _id: string;
+  _type: "student";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  clerkId?: string;
+  imageUrl?: string;
+} | null;
+
+// Source: sanity/lib/student/isEnrolledInCourse.ts
+// Variable: studentQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0]._id
+export type StudentQueryResult = string | null;
+// Variable: enrollmentQuery
+// Query: *[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]
+export type EnrollmentQueryResult = {
+  _id: string;
+  _type: "enrollment";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  student?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "student";
+  };
+  course?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "course";
+  };
+  amount?: number;
+  paymentId?: string;
+  enrolledAt?: string;
+} | null;
+
 // Source: sanity/lib/courses/getCourseById.ts
 // Variable: getCourseByIdQuery
 // Query: *[_type == "course" && _id == $id][0] {      _id,      title,      slug,      description,      price,      image,      "category": category->{        name,        _id      },      "instructor": instructor->{        _id,        name,        bio,        photo      },      "modules": modules[]->{        _id,        title,        "lessons": lessons[]->{          _id,          title,          content,          videoUrl        }      }    }
@@ -444,29 +489,15 @@ export type GetCourseBySlugQueryResult = {
   }> | null;
 } | null;
 
-// Source: sanity/lib/student/getStudentByClerkId.ts
-// Variable: getStudentByClerkIdQuery
-// Query: *[_type == "student" && clerkId == $clerkId][0]
-export type GetStudentByClerkIdQueryResult = {
-  _id: string;
-  _type: "student";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  clerkId?: string;
-  imageUrl?: string;
-} | null;
-
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"course\"] {\n    _id,\n    title,\n    description,\n    price,\n    \"slug\": slug.current,\n    image,\n    \"category\": category->{\n      name\n    },\n    \"instructor\": instructor->{\n      name,\n      photo\n    }\n  }": GetCoursesQueryResult;
+    "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
+    "*[_type == \"student\" && clerkId == $clerkId][0]._id": StudentQueryResult;
+    "*[_type == \"enrollment\" && student._ref == $studentId && course._ref == $courseId][0]": EnrollmentQueryResult;
     "*[_type == \"course\" && _id == $id][0] {\n      _id,\n      title,\n      slug,\n      description,\n      price,\n      image,\n      \"category\": category->{\n        name,\n        _id\n      },\n      \"instructor\": instructor->{\n        _id,\n        name,\n        bio,\n        photo\n      },\n      \"modules\": modules[]->{\n        _id,\n        title,\n        \"lessons\": lessons[]->{\n          _id,\n          title,\n          content,\n          videoUrl\n        }\n      }\n    }": GetCourseByIdQueryResult;
     "*[_type == \"course\" && slug.current == $slug][0] {\n      _id,\n      title,\n      description,\n      price,\n      image,\n      \"category\": category->{\n        name,\n        _id\n      },\n      \"instructor\": instructor->{\n        _id,\n        name,\n        bio,\n        photo\n      },\n      \"modules\": modules[]->{\n        _id,\n        title,\n        \"lessons\": lessons[]->{\n          _id,\n          title,\n          content,\n          videoUrl\n        }\n      }\n    }": GetCourseBySlugQueryResult;
-    "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
   }
 }
