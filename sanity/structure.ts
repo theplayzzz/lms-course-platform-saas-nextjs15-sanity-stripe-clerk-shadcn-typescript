@@ -3,7 +3,7 @@ import { StructureBuilder } from "sanity/structure";
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure = (S: StructureBuilder) =>
   S.list()
-    .title("Content")
+    .title("Admin Dashboard")
     .items([
       // Course Content
       S.listItem()
@@ -116,12 +116,12 @@ export const structure = (S: StructureBuilder) =>
 
       S.divider(),
 
-      // Course Management
+      // System Management
       S.listItem()
-        .title("Course Management")
+        .title("System Management")
         .child(
           S.list()
-            .title("Course Management")
+            .title("System Management")
             .items([
               S.documentTypeListItem("enrollment").title("Enrollments"),
               S.documentTypeListItem("category").title("Categories"),
