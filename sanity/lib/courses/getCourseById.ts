@@ -4,31 +4,12 @@ import { defineQuery } from "groq";
 async function getCourseById(id: string) {
   const getCourseByIdQuery =
     defineQuery(`*[_type == "course" && _id == $id][0] {
-      _id,
-      title,
-      slug,
-      description,
-      price,
-      image,
-      "category": category->{
-        name,
-        _id
-      },
-      "instructor": instructor->{
-        _id,
-        name,
-        bio,
-        photo
-      },
-      "modules": modules[]->{
-        _id,
-        title,
-        "lessons": lessons[]->{
-          _id,
-          title,
-          content,
-          videoUrl
-        }
+      ...,  // Spread all course fields
+      "category": category->{...},  // Expand the category reference, including all its fields
+      "instructor": instructor->{...},  // Expand the instructor reference, including all its fields
+      "modules": modules[]-> {  // Expand the array of module references
+        ...,  // Include all module fields
+        "lessons": lessons[]-> {...}  // For each module, expand its array of lesson references
       }
     }`);
 
@@ -37,6 +18,7 @@ async function getCourseById(id: string) {
     params: { id },
   });
 
+  // Return just the data portion of the response
   return course.data;
 }
 
