@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowLeft, Library } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -26,7 +26,17 @@ export function Sidebar({ course }: SidebarProps) {
 
   return (
     <div className="h-full border-r flex flex-col bg-background">
-      <div className="p-6">
+      <div className="p-6 space-y-4 border-b">
+        <Link href="/">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-x-2 pl-2 mb-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <Library className="h-4 w-4" />
+            <span>Course Library</span>
+          </Button>
+        </Link>
         <h1 className="font-semibold text-lg">{course.title}</h1>
       </div>
       <ScrollArea className="flex-1 pt-4">
