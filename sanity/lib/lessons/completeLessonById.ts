@@ -1,3 +1,4 @@
+import groq from "groq";
 import { client } from "../adminClient";
 
 export async function completeLessonById({
@@ -10,7 +11,7 @@ export async function completeLessonById({
   try {
     // Check if lesson is already completed
     const existingCompletion = await client.fetch(
-      `*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0]`,
+      groq`*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0]`,
       { studentId, lessonId }
     );
 
@@ -20,7 +21,7 @@ export async function completeLessonById({
 
     // Fetch lesson details to get module and course
     const lesson = await client.fetch(
-      `*[_type == "lesson" && _id == $lessonId][0]{
+      groq`*[_type == "lesson" && _id == $lessonId][0]{
         _id,
         "module": *[_type == "module" && references(^._id)][0]{
           _id,
