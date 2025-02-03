@@ -17,7 +17,7 @@ export default async function MyCoursesPage() {
   const enrolledCourses = await getEnrolledCourses(user.id);
 
   return (
-    <div className="h-full pt-16">
+    <div className="h-full">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <GraduationCap className="h-8 w-8 text-primary" />
@@ -47,9 +47,9 @@ export default async function MyCoursesPage() {
                 <Link
                   href={`/dashboard/courses/${course._id}`}
                   key={_id}
-                  className="group hover:no-underline"
+                  className="group hover:no-underline flex"
                 >
-                  <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border">
+                  <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border flex flex-col flex-1">
                     <div className="relative h-52 w-full overflow-hidden">
                       {course.image ? (
                         <Image
@@ -70,14 +70,14 @@ export default async function MyCoursesPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-1">
                       <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
                         {course.title}
                       </h3>
-                      <p className="text-muted-foreground mb-4 line-clamp-2">
+                      <p className="text-muted-foreground mb-4 line-clamp-2 flex-1">
                         {course.description}
                       </p>
-                      <div className="space-y-4">
+                      <div className="space-y-4 mt-auto">
                         {course.instructor && (
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">

@@ -62,6 +62,7 @@ export function Sidebar({ course }: SidebarProps) {
         <div className="flex items-center justify-between">
           <Link
             href="/my-courses"
+            prefetch={false}
             className="flex items-center gap-x-2 text-sm hover:text-primary transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
