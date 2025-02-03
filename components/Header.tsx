@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { BookOpen } from "lucide-react";
+import { BookMarkedIcon, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { SearchInput } from "./SearchInput";
 import { Button } from "./ui/button";
@@ -24,15 +24,18 @@ export default function Header() {
             <SearchInput />
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <nav>
               <Link
                 href="/my-courses"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="flex space-x-2 items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors md:border md:border-border md:rounded-md md:px-4 md:py-2"
               >
-                My Courses
+                <BookMarkedIcon className="h-4 w-4" />
+                <span className="hidden md:block">My Courses</span>
               </Link>
             </nav>
+
+            <DarkModeToggle />
 
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
@@ -45,8 +48,6 @@ export default function Header() {
                 </Button>
               </SignInButton>
             </SignedOut>
-
-            <DarkModeToggle />
           </div>
         </div>
       </div>
