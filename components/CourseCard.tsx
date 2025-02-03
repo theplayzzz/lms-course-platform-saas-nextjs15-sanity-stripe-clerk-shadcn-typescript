@@ -22,7 +22,11 @@ interface CourseCardProps {
 
 export function CourseCard({ course, progress, href }: CourseCardProps) {
   return (
-    <Link href={href} className="group hover:no-underline flex">
+    <Link
+      href={href}
+      prefetch={false}
+      className="group hover:no-underline flex"
+    >
       <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border flex flex-col flex-1">
         <div className="relative h-52 w-full overflow-hidden">
           {course.image ? (

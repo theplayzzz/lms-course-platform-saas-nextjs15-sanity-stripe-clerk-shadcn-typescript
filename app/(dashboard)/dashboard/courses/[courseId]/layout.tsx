@@ -18,7 +18,7 @@ export default async function CourseLayout({
   params,
 }: CourseLayoutProps) {
   const user = await currentUser();
-  const { courseId } = params;
+  const { courseId } = await params;
 
   if (!user?.id) {
     return redirect("/");
@@ -40,7 +40,6 @@ export default async function CourseLayout({
     return redirect("/my-courses");
   }
 
-  console.log(progress);
   return (
     <div className="h-full">
       <Sidebar

@@ -85,10 +85,8 @@ export const structure = (S: StructureBuilder) =>
                 .child(
                   S.documentTypeList("student")
                     .title("Students")
-                    .child((studentId) => {
-                      console.log(studentId);
-
-                      return S.list()
+                    .child((studentId) =>
+                      S.list()
                         .title("Student Options")
                         .items([
                           // Option to edit student details
@@ -125,8 +123,8 @@ export const structure = (S: StructureBuilder) =>
                                   { field: "completedAt", direction: "desc" },
                                 ])
                             ),
-                        ]);
-                    })
+                        ])
+                    )
                 ),
             ])
         ),

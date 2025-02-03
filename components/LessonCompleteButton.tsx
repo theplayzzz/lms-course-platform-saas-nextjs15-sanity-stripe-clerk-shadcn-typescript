@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -46,9 +46,15 @@ export function LessonCompleteButton({
           Completed
         </>
       ) : isPending ? (
-        "Marking as complete..."
+        <>
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          Marking as complete...
+        </>
       ) : (
-        "Mark as Complete"
+        <>
+          <CheckCircle className="h-4 w-4 mr-2" />
+          Mark Lesson as Complete
+        </>
       )}
     </Button>
   );

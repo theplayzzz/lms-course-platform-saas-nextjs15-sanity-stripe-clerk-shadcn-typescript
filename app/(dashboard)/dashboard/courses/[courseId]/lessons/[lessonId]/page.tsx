@@ -48,14 +48,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     <div className="h-full flex flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto py-12 px-4">
-          <div className="flex items-center justify-between gap-4 mb-8">
-            <h1 className="text-2xl font-bold">{lesson.title}</h1>
-            <LessonCompleteButton
-              lessonId={lesson._id}
-              studentId={student._id}
-              isCompleted={isCompleted}
-            />
-          </div>
+          <h1 className="text-2xl font-bold">{lesson.title}</h1>
 
           {lesson.description && (
             <p className="text-muted-foreground mb-8">{lesson.description}</p>
@@ -77,6 +70,12 @@ export default async function LessonPage({ params }: LessonPageProps) {
                 </div>
               </div>
             )}
+
+            <LessonCompleteButton
+              lessonId={lesson._id}
+              studentId={student._id}
+              isCompleted={isCompleted}
+            />
           </div>
         </div>
       </div>

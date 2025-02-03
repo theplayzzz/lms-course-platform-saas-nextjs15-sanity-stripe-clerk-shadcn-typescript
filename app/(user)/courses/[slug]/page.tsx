@@ -40,6 +40,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
         <div className="absolute inset-0 container mx-auto px-4 flex flex-col justify-end pb-12">
           <Link
             href="/"
+            prefetch={false}
             className="text-white mb-8 flex items-center hover:text-primary transition-colors w-fit"
           >
             <ArrowLeft className="mr-2 h-5 w-5" />
