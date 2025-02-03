@@ -5,6 +5,9 @@ import { getLessonById } from "@/sanity/lib/lessons/getLessonById";
 import { PortableText } from "@portabletext/react";
 import { LoomEmbed } from "@/components/LoomEmbed";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
+import { getLessonCompletions } from "@/sanity/lib/lessons/getLessonCompletions";
+import { LessonCompleteButton } from "@/components/LessonCompleteButton";
 
 interface LessonPageProps {
   params: {
@@ -27,17 +30,32 @@ export default async function LessonPage({ params }: LessonPageProps) {
     return redirect(`/courses/${courseId}`);
   }
 
-  const lesson = await getLessonById(lessonId);
+  const [lesson, student, completions] = await Promise.all([
+    getLessonById(lessonId),
+    getStudentByClerkId(user.id),
+    getLessonCompletions(user.id, courseId),
+  ]);
 
-  if (!lesson) {
+  if (!lesson || !student) {
     return redirect(`/dashboard/courses/${courseId}`);
   }
+
+  const isCompleted = completions.completedLessons.some(
+    (completion) => completion.lesson?._id === lessonId
+  );
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto py-12 px-4">
-          <h1 className="text-2xl font-bold mb-4">{lesson.title}</h1>
+          <div className="flex items-center justify-between gap-4 mb-8">
+            <h1 className="text-2xl font-bold">{lesson.title}</h1>
+            <LessonCompleteButton
+              lessonId={lesson._id}
+              studentId={student._id}
+              isCompleted={isCompleted}
+            />
+          </div>
 
           {lesson.description && (
             <p className="text-muted-foreground mb-8">{lesson.description}</p>

@@ -1,24 +1,29 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import { Loader } from "@/components/ui/loader";
-import { Course } from "@/sanity.types";
+import {
+  GetCoursesQueryResult,
+  GetEnrolledCoursesQueryResult,
+} from "@/sanity.types";
 
 interface CourseCardProps {
-  course: Course;
+  course:
+    | GetCoursesQueryResult[number]
+    | NonNullable<
+        NonNullable<GetEnrolledCoursesQueryResult>["enrolledCourses"][number]["course"]
+      >;
+  progress?: number;
   href: string;
-  showProgress?: boolean;
 }
 
-export function CourseCard({
-  course,
-  href,
-  showProgress = false,
-}: CourseCardProps) {
+export function CourseCard({ course, progress, href }: CourseCardProps) {
   return (
-    <Link href={href} className="group hover:no-underline">
-      <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border">
+    <Link href={href} className="group hover:no-underline flex">
+      <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border flex flex-col flex-1">
         <div className="relative h-52 w-full overflow-hidden">
           {course.image ? (
             <Image
@@ -37,8 +42,8 @@ export function CourseCard({
             <span className="text-sm font-medium px-3 py-1 bg-black/50 text-white rounded-full backdrop-blur-sm">
               {course.category?.name || "Uncategorized"}
             </span>
-            {course.price !== undefined && (
-              <span className="text-white font-bold px-3 py-1 bg-black/50 rounded-full backdrop-blur-sm">
+            {"price" in course && typeof course.price === "number" && (
+              <span className="text-white font-bold px-3 py-1 bg-black/50 dark:bg-white/20 rounded-full backdrop-blur-sm">
                 $
                 {course.price.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
@@ -47,14 +52,14 @@ export function CourseCard({
             )}
           </div>
         </div>
-        <div className="p-6">
+        <div className="p-6 flex flex-col flex-1">
           <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
             {course.title}
           </h3>
-          <p className="text-muted-foreground mb-4 line-clamp-2">
+          <p className="text-muted-foreground mb-4 line-clamp-2 flex-1">
             {course.description}
           </p>
-          <div className="space-y-4">
+          <div className="space-y-4 mt-auto">
             {course.instructor && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -79,16 +84,16 @@ export function CourseCard({
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </div>
             )}
-            {showProgress && (
+            {typeof progress === "number" && (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Course Progress</span>
-                  <span>{course.progress || 0}%</span>
+                  <span>{progress}%</span>
                 </div>
                 <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
                   <div
                     className="h-full bg-primary transition-all"
-                    style={{ width: `${course.progress || 0}%` }}
+                    style={{ width: `${progress}%` }}
                   />
                 </div>
               </div>

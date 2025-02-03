@@ -7,11 +7,21 @@ import {
 } from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Library, ChevronRight, PlayCircle, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Library,
+  ChevronRight,
+  PlayCircle,
+  X,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { GetCourseByIdQueryResult } from "@/sanity.types";
+import {
+  GetCourseByIdQueryResult,
+  GetCompletionsQueryResult,
+} from "@/sanity.types";
 import { useSidebar } from "@/components/providers/sidebar-provider";
 import { useEffect, useState } from "react";
 import {
@@ -24,9 +34,16 @@ import DarkModeToggle from "../DarkModeToggle";
 
 interface SidebarProps {
   course: GetCourseByIdQueryResult;
+  completedLessons?: GetCompletionsQueryResult["completedLessons"];
+  moduleProgress?: {
+    moduleId: string;
+    progress: number;
+    completedLessons: number;
+    totalLessons: number;
+  }[];
 }
 
-export function Sidebar({ course }: SidebarProps) {
+export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
   const pathname = usePathname();
   const { isOpen, toggle, close } = useSidebar();
   const [isMounted, setIsMounted] = useState(false);
@@ -124,37 +141,41 @@ export function Sidebar({ course }: SidebarProps) {
                       const isActive =
                         pathname ===
                         `/dashboard/courses/${course._id}/lessons/${lesson._id}`;
+                      const isCompleted = completedLessons.some(
+                        (completion) => completion.lesson?._id === lesson._id
+                      );
 
                       return (
                         <Link
                           key={lesson._id}
                           href={`/dashboard/courses/${course._id}/lessons/${lesson._id}`}
                           onClick={close}
+                          className={cn(
+                            "flex items-center pl-8 lg:pl-10 pr-2 lg:pr-4 py-2 gap-x-2 lg:gap-x-4 group hover:bg-muted/50 transition-colors relative",
+                            isActive && "bg-muted",
+                            isCompleted && "text-primary"
+                          )}
                         >
-                          <div
+                          <span className="text-xs font-medium text-muted-foreground min-w-[28px]">
+                            {String(lessonIndex + 1).padStart(2, "0")}
+                          </span>
+                          <PlayCircle
                             className={cn(
-                              "flex items-center pl-8 lg:pl-10 pr-2 lg:pr-4 py-2 gap-x-2 lg:gap-x-4 group hover:bg-muted/50 transition-colors relative",
-                              isActive && "bg-muted"
+                              "h-4 w-4 shrink-0",
+                              isActive
+                                ? "text-primary"
+                                : "text-muted-foreground group-hover:text-primary/80"
                             )}
-                          >
-                            <span className="text-xs font-medium text-muted-foreground min-w-[28px]">
-                              {String(lessonIndex + 1).padStart(2, "0")}
-                            </span>
-                            <PlayCircle
-                              className={cn(
-                                "h-4 w-4 shrink-0",
-                                isActive
-                                  ? "text-primary"
-                                  : "text-muted-foreground group-hover:text-primary/80"
-                              )}
-                            />
-                            <span className="text-sm line-clamp-2 min-w-0">
-                              {lesson.title}
-                            </span>
-                            {isActive && (
-                              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-8 bg-primary" />
-                            )}
-                          </div>
+                          />
+                          <span className="text-sm line-clamp-2 min-w-0">
+                            {lesson.title}
+                          </span>
+                          {isActive && (
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-8 bg-primary" />
+                          )}
+                          {isCompleted && (
+                            <Check className="h-4 w-4 flex-shrink-0" />
+                          )}
                         </Link>
                       );
                     })}

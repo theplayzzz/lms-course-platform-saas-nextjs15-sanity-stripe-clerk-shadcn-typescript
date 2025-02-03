@@ -1,6 +1,5 @@
 import { defineQuery } from "groq";
 import { sanityFetch } from "../live";
-import type { Course } from "@/sanity.types";
 
 export async function searchCourses(term: string) {
   const searchQuery = defineQuery(`*[_type == "course" && (
@@ -43,5 +42,5 @@ export async function searchCourses(term: string) {
     params: { term },
   });
 
-  return (result.data || []) as Course[];
+  return result.data || [];
 }

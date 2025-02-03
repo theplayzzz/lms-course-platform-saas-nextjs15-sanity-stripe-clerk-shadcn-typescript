@@ -85,8 +85,10 @@ export const structure = (S: StructureBuilder) =>
                 .child(
                   S.documentTypeList("student")
                     .title("Students")
-                    .child((studentId) =>
-                      S.list()
+                    .child((studentId) => {
+                      console.log(studentId);
+
+                      return S.list()
                         .title("Student Options")
                         .items([
                           // Option to edit student details
@@ -108,8 +110,23 @@ export const structure = (S: StructureBuilder) =>
                                 )
                                 .params({ studentId })
                             ),
-                        ])
-                    )
+                          // Option to view completed lessons
+                          S.listItem()
+                            .title("View Completed Lessons")
+                            .child(
+                              S.documentList()
+                                .title("Completed Lessons")
+                                .schemaType("lessonCompletion")
+                                .filter(
+                                  '_type == "lessonCompletion" && student._ref == $studentId'
+                                )
+                                .params({ studentId })
+                                .defaultOrdering([
+                                  { field: "completedAt", direction: "desc" },
+                                ])
+                            ),
+                        ]);
+                    })
                 ),
             ])
         ),
@@ -125,6 +142,9 @@ export const structure = (S: StructureBuilder) =>
             .items([
               S.documentTypeListItem("enrollment").title("Enrollments"),
               S.documentTypeListItem("category").title("Categories"),
+              S.documentTypeListItem("lessonCompletion")
+                .title("Lesson Completions")
+                .schemaType("lessonCompletion"),
             ])
         ),
     ]);

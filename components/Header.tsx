@@ -38,12 +38,12 @@ export default function Header() {
             <DarkModeToggle />
 
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </SignedIn>
 
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="ghost" size="sm">
+                <Button variant="outline" size="default">
                   Sign In
                 </Button>
               </SignInButton>
