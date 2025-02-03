@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import DarkModeToggle from "../DarkModeToggle";
 
 interface SidebarProps {
   course: GetCourseByIdQueryResult;
@@ -69,14 +70,18 @@ export function Sidebar({ course }: SidebarProps) {
               <span>Course Library</span>
             </div>
           </Link>
-          <Button
-            onClick={close}
-            variant="ghost"
-            className="lg:hidden -mr-2"
-            size="icon"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="space-x-2">
+            <DarkModeToggle />
+
+            <Button
+              onClick={close}
+              variant="ghost"
+              className="lg:hidden -mr-2"
+              size="icon"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <h1 className="font-semibold text-2xl">{course.title}</h1>
       </div>
