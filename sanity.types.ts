@@ -479,6 +479,51 @@ export type GetCourseBySlugQueryResult = {
   }> | null;
 } | null;
 
+// Source: sanity/lib/student/getEnrolledCourses.ts
+// Variable: getEnrolledCoursesQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0] {    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {      _id,      enrolledAt,      "course": course-> {        _id,        title,        description,        "slug": slug.current,        image,        "category": category->{          name        },        "instructor": instructor->{          name,          photo        },        "progress": count(*[_type == "lessonProgress" && student._ref == ^.student._ref && lesson._ref in *[_type == "lesson" && references(^.course._ref)]._id])      }    }  }
+export type GetEnrolledCoursesQueryResult = {
+  enrolledCourses: Array<{
+    _id: string;
+    enrolledAt: string | null;
+    course: {
+      _id: string;
+      title: string | null;
+      description: string | null;
+      slug: string | null;
+      image: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+      category: {
+        name: string | null;
+      } | null;
+      instructor: {
+        name: string | null;
+        photo: {
+          asset?: {
+            _ref: string;
+            _type: "reference";
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+          };
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        } | null;
+      } | null;
+      progress: number;
+    } | null;
+  }>;
+} | null;
+
 // Source: sanity/lib/student/getStudentByClerkId.ts
 // Variable: getStudentByClerkIdQuery
 // Query: *[_type == "student" && clerkId == $clerkId][0]
@@ -531,6 +576,7 @@ declare module "@sanity/client" {
     "*[_type == \"course\"] {\n    _id,\n    title,\n    description,\n    price,\n    \"slug\": slug.current,\n    image,\n    \"category\": category->{\n      name\n    },\n    \"instructor\": instructor->{\n      name,\n      photo\n    }\n  }": GetCoursesQueryResult;
     "*[_type == \"course\" && _id == $id][0] {\n      ...,  // Spread all course fields\n      \"category\": category->{...},  // Expand the category reference, including all its fields\n      \"instructor\": instructor->{...},  // Expand the instructor reference, including all its fields\n      \"modules\": modules[]-> {  // Expand the array of module references\n        ...,  // Include all module fields\n        \"lessons\": lessons[]-> {...}  // For each module, expand its array of lesson references\n      }\n    }": GetCourseByIdQueryResult;
     "*[_type == \"course\" && slug.current == $slug][0] {\n      _id,\n      title,\n      description,\n      price,\n      image,\n      \"category\": category->{\n        name,\n        _id\n      },\n      \"instructor\": instructor->{\n        _id,\n        name,\n        bio,\n        photo\n      },\n      \"modules\": modules[]->{\n        _id,\n        title,\n        \"lessons\": lessons[]->{\n          _id,\n          title,\n          content,\n          videoUrl\n        }\n      }\n    }": GetCourseBySlugQueryResult;
+    "*[_type == \"student\" && clerkId == $clerkId][0] {\n    \"enrolledCourses\": *[_type == \"enrollment\" && student._ref == ^._id] {\n      _id,\n      enrolledAt,\n      \"course\": course-> {\n        _id,\n        title,\n        description,\n        \"slug\": slug.current,\n        image,\n        \"category\": category->{\n          name\n        },\n        \"instructor\": instructor->{\n          name,\n          photo\n        },\n        \"progress\": count(*[_type == \"lessonProgress\" && student._ref == ^.student._ref && lesson._ref in *[_type == \"lesson\" && references(^.course._ref)]._id])\n      }\n    }\n  }": GetEnrolledCoursesQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]._id": StudentQueryResult;
     "*[_type == \"enrollment\" && student._ref == $studentId && course._ref == $courseId][0]": EnrollmentQueryResult;

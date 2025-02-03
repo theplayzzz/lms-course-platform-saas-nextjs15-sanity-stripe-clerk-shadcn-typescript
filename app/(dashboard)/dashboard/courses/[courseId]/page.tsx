@@ -8,7 +8,8 @@ interface CoursePageProps {
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {
-  const course = await getCourseById(params.courseId);
+  const { courseId } = await params;
+  const course = await getCourseById(courseId);
 
   if (!course) {
     return redirect("/");

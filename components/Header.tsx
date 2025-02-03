@@ -27,10 +27,10 @@ function Header() {
               Home
             </Link>
             <Link
-              href="#courses"
+              href="/my-courses"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Courses
+              My Courses
             </Link>
             <Link
               href="#"
