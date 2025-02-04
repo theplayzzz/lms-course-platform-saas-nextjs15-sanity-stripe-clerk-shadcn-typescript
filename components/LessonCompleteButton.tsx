@@ -8,13 +8,15 @@ import { completeLessonAction } from "@/app/actions/completeLessonAction";
 
 interface LessonCompleteButtonProps {
   lessonId: string;
-  studentId: string;
+  clerkId: string;
+  courseId: string;
   isCompleted?: boolean;
 }
 
 export function LessonCompleteButton({
   lessonId,
-  studentId,
+  clerkId,
+  courseId,
   isCompleted = false,
 }: LessonCompleteButtonProps) {
   const [isPending, setIsPending] = useState(false);
@@ -23,7 +25,7 @@ export function LessonCompleteButton({
   const handleComplete = async () => {
     try {
       setIsPending(true);
-      await completeLessonAction(lessonId, studentId);
+      await completeLessonAction(lessonId, clerkId, courseId);
 
       router.refresh();
     } catch (error) {

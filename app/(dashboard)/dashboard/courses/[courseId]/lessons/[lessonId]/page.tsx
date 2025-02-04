@@ -6,7 +6,6 @@ import { LoomEmbed } from "@/components/LoomEmbed";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { getLessonCompletions } from "@/sanity/lib/lessons/getLessonCompletions";
 import { LessonCompleteButton } from "@/components/LessonCompleteButton";
-import { checkCourseAccess } from "@/lib/auth";
 
 interface LessonPageProps {
   params: Promise<{
@@ -19,15 +18,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const user = await currentUser();
   const { courseId, lessonId } = await params;
 
-  const authResult = await checkCourseAccess(user?.id || null, courseId);
-
-  if (!authResult.isAuthorized || !user?.id) {
-    return redirect(authResult.redirect!);
-  }
-
   const [lesson, completions] = await Promise.all([
     getLessonById(lessonId),
-    getLessonCompletions(user.id, courseId),
+    // We check if user is logged in at layout level
+    getLessonCompletions(user!.id, courseId),
   ]);
 
   if (!lesson) {
@@ -67,7 +61,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
             <LessonCompleteButton
               lessonId={lesson._id}
-              studentId={authResult.studentId!}
+              clerkId={user!.id}
+              courseId={courseId}
               isCompleted={isCompleted}
             />
           </div>

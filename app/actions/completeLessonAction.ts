@@ -5,17 +5,21 @@ import { revalidatePath } from "next/cache";
 
 export async function completeLessonAction(
   lessonId: string,
-  studentId: string
+  clerkId: string,
+  courseId: string
 ) {
   try {
     await completeLessonById({
       lessonId,
-      studentId,
+      clerkId,
     });
 
-    // Revalidate the course and lesson pages
-    revalidatePath("/dashboard/courses/[courseId]", "page");
-    revalidatePath("/dashboard/courses/[courseId]/lessons/[lessonId]", "page");
+    // Revalidate the specific course and lesson URLs
+    revalidatePath(`/dashboard/courses/${courseId}`);
+    revalidatePath(`/dashboard/courses/${courseId}/lessons/${lessonId}`);
+
+    // Also revalidate the my-courses page since progress has changed
+    revalidatePath("/my-courses");
 
     return { success: true };
   } catch (error) {

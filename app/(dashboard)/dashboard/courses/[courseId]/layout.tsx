@@ -19,6 +19,10 @@ export default async function CourseLayout({
   const user = await currentUser();
   const { courseId } = await params;
 
+  if (!user?.id) {
+    return redirect("/");
+  }
+
   const authResult = await checkCourseAccess(user?.id || null, courseId);
   if (!authResult.isAuthorized || !user?.id) {
     return redirect(authResult.redirect!);

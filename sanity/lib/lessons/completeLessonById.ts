@@ -1,14 +1,24 @@
 import groq from "groq";
 import { client } from "../adminClient";
+import { getStudentByClerkId } from "../student/getStudentByClerkId";
 
 export async function completeLessonById({
   lessonId,
-  studentId,
+  clerkId,
 }: {
   lessonId: string;
-  studentId: string;
+  clerkId: string;
 }) {
   try {
+    // Get Sanity student ID from Clerk ID
+    const student = await getStudentByClerkId(clerkId);
+
+    if (!student?._id) {
+      throw new Error("Student not found");
+    }
+
+    const studentId = student._id;
+
     // Check if lesson is already completed
     const existingCompletion = await client.fetch(
       groq`*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0]`,
