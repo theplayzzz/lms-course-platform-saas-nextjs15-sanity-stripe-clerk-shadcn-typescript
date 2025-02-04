@@ -5,6 +5,7 @@ import {
   calculateModuleProgress,
   calculateCourseProgress,
 } from "@/lib/courseProgress";
+import { Module } from "@/sanity.types";
 
 export async function getModuleProgress(clerkId: string, courseId: string) {
   // First get the student's Sanity ID
@@ -51,12 +52,13 @@ export async function getModuleProgress(clerkId: string, courseId: string) {
   // Calculate module progress
   const moduleProgress =
     course?.modules?.map((module) =>
-      calculateModuleProgress(module, completedLessons)
+      // as unknown as Module is a type assertion to ensure the module is treated as a Module type
+      calculateModuleProgress(module as unknown as Module, completedLessons)
     ) || [];
 
   // Calculate overall course progress
   const courseProgress = calculateCourseProgress(
-    course?.modules || null,
+    (course?.modules as unknown as Module[]) || null,
     completedLessons
   );
 

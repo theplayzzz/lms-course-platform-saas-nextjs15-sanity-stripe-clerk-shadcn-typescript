@@ -21,6 +21,7 @@ import { usePathname } from "next/navigation";
 import {
   GetCourseByIdQueryResult,
   GetCompletionsQueryResult,
+  Module,
 } from "@/sanity.types";
 import { useSidebar } from "@/components/providers/sidebar-provider";
 import { useEffect, useState } from "react";
@@ -69,7 +70,10 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
     return null;
   }
 
-  const progress = calculateCourseProgress(course.modules, completedLessons);
+  const progress = calculateCourseProgress(
+    course.modules as unknown as Module[],
+    completedLessons
+  );
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col">

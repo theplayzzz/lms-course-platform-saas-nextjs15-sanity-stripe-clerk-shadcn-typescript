@@ -1,5 +1,6 @@
 "use client";
 
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
 interface CourseProgressProps {
@@ -8,6 +9,7 @@ interface CourseProgressProps {
   size?: "default" | "sm";
   showPercentage?: boolean;
   label?: string;
+  className?: string;
 }
 
 export function CourseProgress({
@@ -15,28 +17,25 @@ export function CourseProgress({
   variant = "default",
   size = "default",
   showPercentage = true,
-  label = "Course Progress",
+  label,
+  className,
 }: CourseProgressProps) {
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-sm text-muted-foreground">
-        {label && <span>{label}</span>}
-        {showPercentage && <span>{Math.round(progress)}%</span>}
-      </div>
-      <div
-        className={cn(
-          "w-full bg-secondary rounded-full overflow-hidden",
-          size === "sm" ? "h-1" : "h-2"
+    <div className={cn("space-y-2", className)}>
+      <div className="flex items-center justify-between gap-2 text-sm">
+        {label && <span className="text-muted-foreground">{label}</span>}
+        {showPercentage && (
+          <span className="text-muted-foreground font-medium">{progress}%</span>
         )}
-      >
-        <div
-          className={cn(
-            "h-full transition-all",
-            variant === "default" ? "bg-primary" : "bg-green-500"
-          )}
-          style={{ width: `${progress}%` }}
-        />
       </div>
+      <Progress
+        value={progress}
+        className={cn(
+          "h-2 transition-all",
+          size === "sm" && "h-1",
+          variant === "success" && "[&>div]:bg-emerald-600"
+        )}
+      />
     </div>
   );
 }

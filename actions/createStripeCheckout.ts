@@ -16,7 +16,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     const { emailAddresses, firstName, lastName, imageUrl } = clerkUser;
     const email = emailAddresses[0]?.emailAddress;
 
-    if (!emailAddresses || !email || !firstName || !lastName || !imageUrl) {
+    if (!emailAddresses || !email) {
       throw new Error("User details not found");
     }
 
@@ -28,7 +28,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     const user = await createStudentIfNotExists({
       clerkId: userId,
       email: email || "",
-      firstName: firstName || "",
+      firstName: firstName || email,
       lastName: lastName || "",
       imageUrl: imageUrl || "",
     });

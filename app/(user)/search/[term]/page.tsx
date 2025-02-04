@@ -3,9 +3,9 @@ import { CourseCard } from "@/components/CourseCard";
 import { searchCourses } from "@/sanity/lib/courses/searchCourses";
 
 interface SearchPageProps {
-  params: {
+  params: Promise<{
     term: string;
-  };
+  }>;
 }
 
 export default async function SearchPage({ params }: SearchPageProps) {

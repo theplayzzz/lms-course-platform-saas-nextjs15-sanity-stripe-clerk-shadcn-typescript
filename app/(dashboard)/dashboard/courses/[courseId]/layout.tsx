@@ -7,9 +7,9 @@ import { checkCourseAccess } from "@/lib/auth";
 
 interface CourseLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     courseId: string;
-  };
+  }>;
 }
 
 export default async function CourseLayout({

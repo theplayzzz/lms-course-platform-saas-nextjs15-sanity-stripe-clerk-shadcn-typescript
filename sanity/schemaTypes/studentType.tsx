@@ -10,13 +10,11 @@ export const studentType = defineType({
       name: "firstName",
       title: "First Name",
       type: "string",
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "lastName",
       title: "Last Name",
       type: "string",
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "email",

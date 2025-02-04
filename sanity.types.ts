@@ -601,6 +601,96 @@ export type SearchQueryResult = Array<{
   } | null;
 }>;
 
+// Source: sanity/lib/student/getEnrolledCourses.ts
+// Variable: getEnrolledCoursesQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0] {    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {      _id,      enrolledAt,      "course": course-> {        _id,        title,        description,        "slug": slug.current,        image,        "category": category->{          name        },        "instructor": instructor->{          name,          photo        },        "progress": count(*[_type == "lessonProgress" && student._ref == ^.student._ref && lesson._ref in *[_type == "lesson" && references(^.course._ref)]._id])      }    }  }
+export type GetEnrolledCoursesQueryResult = {
+  enrolledCourses: Array<{
+    _id: string;
+    enrolledAt: string | null;
+    course: {
+      _id: string;
+      title: string | null;
+      description: string | null;
+      slug: string | null;
+      image: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      } | null;
+      category: {
+        name: string | null;
+      } | null;
+      instructor: {
+        name: string | null;
+        photo: {
+          asset?: {
+            _ref: string;
+            _type: "reference";
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+          };
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        } | null;
+      } | null;
+      progress: number;
+    } | null;
+  }>;
+} | null;
+
+// Source: sanity/lib/student/getStudentByClerkId.ts
+// Variable: getStudentByClerkIdQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0]
+export type GetStudentByClerkIdQueryResult = {
+  _id: string;
+  _type: "student";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  clerkId?: string;
+  imageUrl?: string;
+} | null;
+
+// Source: sanity/lib/student/isEnrolledInCourse.ts
+// Variable: studentQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0]._id
+export type StudentQueryResult = string | null;
+// Variable: enrollmentQuery
+// Query: *[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]
+export type EnrollmentQueryResult = {
+  _id: string;
+  _type: "enrollment";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  student?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "student";
+  };
+  course?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "course";
+  };
+  amount?: number;
+  paymentId?: string;
+  enrolledAt?: string;
+} | null;
+
 // Source: sanity/lib/lessons/getLessonById.ts
 // Variable: getLessonByIdQuery
 // Query: *[_type == "lesson" && _id == $id][0] {    _id,    _type,    _createdAt,    _updatedAt,    _rev,    title,    description,    videoUrl,    loomUrl,    content,    "module": module->{      _id,      title,      "course": course->{        _id,        title      }    }  }
@@ -695,96 +785,6 @@ export type ProgressQueryResult = {
   } | null;
 };
 
-// Source: sanity/lib/student/getEnrolledCourses.ts
-// Variable: getEnrolledCoursesQuery
-// Query: *[_type == "student" && clerkId == $clerkId][0] {    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {      _id,      enrolledAt,      "course": course-> {        _id,        title,        description,        "slug": slug.current,        image,        "category": category->{          name        },        "instructor": instructor->{          name,          photo        },        "progress": count(*[_type == "lessonProgress" && student._ref == ^.student._ref && lesson._ref in *[_type == "lesson" && references(^.course._ref)]._id])      }    }  }
-export type GetEnrolledCoursesQueryResult = {
-  enrolledCourses: Array<{
-    _id: string;
-    enrolledAt: string | null;
-    course: {
-      _id: string;
-      title: string | null;
-      description: string | null;
-      slug: string | null;
-      image: {
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-      } | null;
-      category: {
-        name: string | null;
-      } | null;
-      instructor: {
-        name: string | null;
-        photo: {
-          asset?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-          };
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-        } | null;
-      } | null;
-      progress: number;
-    } | null;
-  }>;
-} | null;
-
-// Source: sanity/lib/student/getStudentByClerkId.ts
-// Variable: getStudentByClerkIdQuery
-// Query: *[_type == "student" && clerkId == $clerkId][0]
-export type GetStudentByClerkIdQueryResult = {
-  _id: string;
-  _type: "student";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  clerkId?: string;
-  imageUrl?: string;
-} | null;
-
-// Source: sanity/lib/student/isEnrolledInCourse.ts
-// Variable: studentQuery
-// Query: *[_type == "student" && clerkId == $clerkId][0]._id
-export type StudentQueryResult = string | null;
-// Variable: enrollmentQuery
-// Query: *[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]
-export type EnrollmentQueryResult = {
-  _id: string;
-  _type: "enrollment";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  student?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "student";
-  };
-  course?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "course";
-  };
-  amount?: number;
-  paymentId?: string;
-  enrolledAt?: string;
-} | null;
-
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -793,11 +793,11 @@ declare module "@sanity/client" {
     "*[_type == \"course\" && slug.current == $slug][0] {\n      _id,\n      title,\n      description,\n      price,\n      image,\n      \"category\": category->{\n        name,\n        _id\n      },\n      \"instructor\": instructor->{\n        _id,\n        name,\n        bio,\n        photo\n      },\n      \"modules\": modules[]->{\n        _id,\n        title,\n        \"lessons\": lessons[]->{\n          _id,\n          title,\n          content,\n          videoUrl\n        }\n      }\n    }": GetCourseBySlugQueryResult;
     "*[_type == \"course\"] {\n    _id,\n    title,\n    description,\n    price,\n    \"slug\": slug.current,\n    image,\n    \"category\": category->{\n      name\n    },\n    \"instructor\": instructor->{\n      name,\n      photo\n    }\n  }": GetCoursesQueryResult;
     "*[_type == \"course\" && (\n    title match $term + \"*\" ||\n    description match $term + \"*\" ||\n    category->name match $term + \"*\"\n  )] {\n    _id,\n    _type,\n    _createdAt,\n    _updatedAt,\n    _rev,\n    title,\n    description,\n    price,\n    \"slug\": slug.current,\n    image,\n    \"category\": category->{\n      name,\n      _id,\n      _type,\n      _createdAt,\n      _updatedAt,\n      _rev\n    },\n    \"instructor\": instructor->{\n      _id,\n      _type,\n      _createdAt,\n      _updatedAt,\n      _rev,\n      name,\n      photo,\n      bio\n    }\n  }": SearchQueryResult;
-    "*[_type == \"lesson\" && _id == $id][0] {\n    _id,\n    _type,\n    _createdAt,\n    _updatedAt,\n    _rev,\n    title,\n    description,\n    videoUrl,\n    loomUrl,\n    content,\n    \"module\": module->{\n      _id,\n      title,\n      \"course\": course->{\n        _id,\n        title\n      }\n    }\n  }": GetLessonByIdQueryResult;
-    "{\n    \"completedLessons\": *[_type == \"lessonCompletion\" && student._ref == $studentId && course._ref == $courseId] {\n      _id,\n      completedAt,\n      \"lesson\": lesson->{\n        _id,\n        title\n      },\n      \"module\": module->{\n        _id,\n        title\n      }\n    },\n    \"course\": *[_type == \"course\" && _id == $courseId][0] {\n      _id,\n      title,\n      \"modules\": modules[]-> {\n        _id,\n        title,\n        \"lessons\": lessons[]-> {\n          _id,\n          title\n        }\n      }\n    }\n  }": GetCompletionsQueryResult | ProgressQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0] {\n    \"enrolledCourses\": *[_type == \"enrollment\" && student._ref == ^._id] {\n      _id,\n      enrolledAt,\n      \"course\": course-> {\n        _id,\n        title,\n        description,\n        \"slug\": slug.current,\n        image,\n        \"category\": category->{\n          name\n        },\n        \"instructor\": instructor->{\n          name,\n          photo\n        },\n        \"progress\": count(*[_type == \"lessonProgress\" && student._ref == ^.student._ref && lesson._ref in *[_type == \"lesson\" && references(^.course._ref)]._id])\n      }\n    }\n  }": GetEnrolledCoursesQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]._id": StudentQueryResult;
     "*[_type == \"enrollment\" && student._ref == $studentId && course._ref == $courseId][0]": EnrollmentQueryResult;
+    "*[_type == \"lesson\" && _id == $id][0] {\n    _id,\n    _type,\n    _createdAt,\n    _updatedAt,\n    _rev,\n    title,\n    description,\n    videoUrl,\n    loomUrl,\n    content,\n    \"module\": module->{\n      _id,\n      title,\n      \"course\": course->{\n        _id,\n        title\n      }\n    }\n  }": GetLessonByIdQueryResult;
+    "{\n    \"completedLessons\": *[_type == \"lessonCompletion\" && student._ref == $studentId && course._ref == $courseId] {\n      _id,\n      completedAt,\n      \"lesson\": lesson->{\n        _id,\n        title\n      },\n      \"module\": module->{\n        _id,\n        title\n      }\n    },\n    \"course\": *[_type == \"course\" && _id == $courseId][0] {\n      _id,\n      title,\n      \"modules\": modules[]-> {\n        _id,\n        title,\n        \"lessons\": lessons[]-> {\n          _id,\n          title\n        }\n      }\n    }\n  }": GetCompletionsQueryResult | ProgressQueryResult;
   }
 }

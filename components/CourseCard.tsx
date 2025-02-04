@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import { Loader } from "@/components/ui/loader";
+import { CourseProgress } from "@/components/CourseProgress";
 import {
   GetCoursesQueryResult,
   GetEnrolledCoursesQueryResult,
@@ -89,18 +90,12 @@ export function CourseCard({ course, progress, href }: CourseCardProps) {
               </div>
             )}
             {typeof progress === "number" && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Course Progress</span>
-                  <span>{progress}%</span>
-                </div>
-                <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary transition-all"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
+              <CourseProgress
+                progress={progress}
+                variant="default"
+                size="sm"
+                label="Course Progress"
+              />
             )}
           </div>
         </div>

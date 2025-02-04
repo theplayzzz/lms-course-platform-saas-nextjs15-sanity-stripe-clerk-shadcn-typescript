@@ -9,10 +9,10 @@ import { LessonCompleteButton } from "@/components/LessonCompleteButton";
 import { checkCourseAccess } from "@/lib/auth";
 
 interface LessonPageProps {
-  params: {
+  params: Promise<{
     courseId: string;
     lessonId: string;
-  };
+  }>;
 }
 
 export default async function LessonPage({ params }: LessonPageProps) {

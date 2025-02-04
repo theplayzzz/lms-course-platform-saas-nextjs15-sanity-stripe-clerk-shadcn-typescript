@@ -2,9 +2,9 @@ import getCourseById from "@/sanity/lib/courses/getCourseById";
 import { redirect } from "next/navigation";
 
 interface CoursePageProps {
-  params: {
+  params: Promise<{
     courseId: string;
-  };
+  }>;
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {
