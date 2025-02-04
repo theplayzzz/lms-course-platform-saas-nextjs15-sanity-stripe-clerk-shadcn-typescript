@@ -1,13 +1,12 @@
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
-import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { getLessonById } from "@/sanity/lib/lessons/getLessonById";
 import { PortableText } from "@portabletext/react";
 import { LoomEmbed } from "@/components/LoomEmbed";
 import { VideoPlayer } from "@/components/VideoPlayer";
-import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
 import { getLessonCompletions } from "@/sanity/lib/lessons/getLessonCompletions";
 import { LessonCompleteButton } from "@/components/LessonCompleteButton";
+import { checkCourseAccess } from "@/lib/auth";
 
 interface LessonPageProps {
   params: {
@@ -18,25 +17,20 @@ interface LessonPageProps {
 
 export default async function LessonPage({ params }: LessonPageProps) {
   const user = await currentUser();
-  const { courseId, lessonId } = await params;
+  const { courseId, lessonId } = params;
 
-  if (!user?.id) {
-    return redirect("/");
+  const authResult = await checkCourseAccess(user?.id || null, courseId);
+
+  if (!authResult.isAuthorized || !user?.id) {
+    return redirect(authResult.redirect!);
   }
 
-  const isEnrolled = await isEnrolledInCourse(user.id, courseId);
-
-  if (!isEnrolled) {
-    return redirect(`/courses/${courseId}`);
-  }
-
-  const [lesson, student, completions] = await Promise.all([
+  const [lesson, completions] = await Promise.all([
     getLessonById(lessonId),
-    getStudentByClerkId(user.id),
     getLessonCompletions(user.id, courseId),
   ]);
 
-  if (!lesson || !student) {
+  if (!lesson) {
     return redirect(`/dashboard/courses/${courseId}`);
   }
 
@@ -73,7 +67,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
             <LessonCompleteButton
               lessonId={lesson._id}
-              studentId={student._id}
+              studentId={authResult.studentId!}
               isCompleted={isCompleted}
             />
           </div>

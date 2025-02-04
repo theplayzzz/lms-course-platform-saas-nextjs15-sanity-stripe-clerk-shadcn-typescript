@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
-import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import getCourseById from "@/sanity/lib/courses/getCourseById";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
 import { getModuleProgress } from "@/sanity/lib/lessons/getModuleProgress";
+import { checkCourseAccess } from "@/lib/auth";
 
 interface CourseLayoutProps {
   children: React.ReactNode;
@@ -18,35 +17,25 @@ export default async function CourseLayout({
   params,
 }: CourseLayoutProps) {
   const user = await currentUser();
-  const { courseId } = await params;
+  const { courseId } = params;
 
-  if (!user?.id) {
-    return redirect("/");
+  const authResult = await checkCourseAccess(user?.id || null, courseId);
+  if (!authResult.isAuthorized || !user?.id) {
+    return redirect(authResult.redirect!);
   }
 
-  const isEnrolled = await isEnrolledInCourse(user.id, courseId);
-
-  if (!isEnrolled) {
-    return redirect(`/courses/${courseId}`);
-  }
-
-  const [course, student, progress] = await Promise.all([
+  const [course, progress] = await Promise.all([
     getCourseById(courseId),
-    getStudentByClerkId(user.id),
     getModuleProgress(user.id, courseId),
   ]);
 
-  if (!course || !student) {
+  if (!course) {
     return redirect("/my-courses");
   }
 
   return (
     <div className="h-full">
-      <Sidebar
-        course={course}
-        completedLessons={progress.completedLessons}
-        moduleProgress={progress.moduleProgress}
-      />
+      <Sidebar course={course} completedLessons={progress.completedLessons} />
       <main className="h-full pt-[64px] lg:pl-96">{children}</main>
     </div>
   );

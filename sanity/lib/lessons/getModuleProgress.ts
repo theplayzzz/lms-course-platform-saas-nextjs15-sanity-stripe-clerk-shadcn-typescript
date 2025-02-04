@@ -1,6 +1,10 @@
 import { defineQuery } from "groq";
 import { sanityFetch } from "../live";
 import { getStudentByClerkId } from "../student/getStudentByClerkId";
+import {
+  calculateModuleProgress,
+  calculateCourseProgress,
+} from "@/lib/courseProgress";
 
 export async function getModuleProgress(clerkId: string, courseId: string) {
   // First get the student's Sanity ID
@@ -46,33 +50,14 @@ export async function getModuleProgress(clerkId: string, courseId: string) {
 
   // Calculate module progress
   const moduleProgress =
-    course?.modules?.map((module) => {
-      const totalLessons = module.lessons?.length || 0;
-      const completedInModule = completedLessons.filter(
-        (completion) => completion.module?._id === module._id
-      ).length;
-
-      return {
-        moduleId: module._id,
-        title: module.title || "",
-        progress: Math.round(
-          totalLessons > 0 ? (completedInModule / totalLessons) * 100 : 0
-        ),
-        completedLessons: completedInModule,
-        totalLessons,
-      };
-    }) || [];
+    course?.modules?.map((module) =>
+      calculateModuleProgress(module, completedLessons)
+    ) || [];
 
   // Calculate overall course progress
-  const totalLessons =
-    course?.modules?.reduce(
-      (acc: number, module) => acc + (module.lessons?.length || 0),
-      0
-    ) || 0;
-
-  const totalCompleted = completedLessons.length;
-  const courseProgress = Math.round(
-    totalLessons > 0 ? (totalCompleted / totalLessons) * 100 : 0
+  const courseProgress = calculateCourseProgress(
+    course?.modules || null,
+    completedLessons
   );
 
   return {

@@ -31,16 +31,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DarkModeToggle from "../DarkModeToggle";
+import { CourseProgress } from "@/components/CourseProgress";
+import { calculateCourseProgress } from "@/lib/courseProgress";
 
 interface SidebarProps {
   course: GetCourseByIdQueryResult;
   completedLessons?: GetCompletionsQueryResult["completedLessons"];
-  moduleProgress?: {
-    moduleId: string;
-    progress: number;
-    completedLessons: number;
-    totalLessons: number;
-  }[];
 }
 
 export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
@@ -73,6 +69,8 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
     return null;
   }
 
+  const progress = calculateCourseProgress(course.modules, completedLessons);
+
   const SidebarContent = () => (
     <div className="h-full flex flex-col">
       <div className="p-4 lg:p-6 border-b flex flex-col gap-y-4">
@@ -101,7 +99,14 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
             </Button>
           </div>
         </div>
-        <h1 className="font-semibold text-2xl">{course.title}</h1>
+        <div className="space-y-4">
+          <h1 className="font-semibold text-2xl">{course.title}</h1>
+          <CourseProgress
+            progress={progress}
+            variant="success"
+            label="Course Progress"
+          />
+        </div>
       </div>
       <ScrollArea className="flex-1">
         <div className="p-2 lg:p-4">
@@ -154,28 +159,35 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
                           className={cn(
                             "flex items-center pl-8 lg:pl-10 pr-2 lg:pr-4 py-2 gap-x-2 lg:gap-x-4 group hover:bg-muted/50 transition-colors relative",
                             isActive && "bg-muted",
-                            isCompleted && "text-primary"
+                            isCompleted && "text-muted-foreground"
                           )}
                         >
                           <span className="text-xs font-medium text-muted-foreground min-w-[28px]">
                             {String(lessonIndex + 1).padStart(2, "0")}
                           </span>
-                          <PlayCircle
+                          {isCompleted ? (
+                            <Check className="h-4 w-4 shrink-0 text-green-500" />
+                          ) : (
+                            <PlayCircle
+                              className={cn(
+                                "h-4 w-4 shrink-0",
+                                isActive
+                                  ? "text-primary"
+                                  : "text-muted-foreground group-hover:text-primary/80"
+                              )}
+                            />
+                          )}
+                          <span
                             className={cn(
-                              "h-4 w-4 shrink-0",
-                              isActive
-                                ? "text-primary"
-                                : "text-muted-foreground group-hover:text-primary/80"
+                              "text-sm line-clamp-2 min-w-0",
+                              isCompleted &&
+                                "text-muted-foreground line-through decoration-green-500/50"
                             )}
-                          />
-                          <span className="text-sm line-clamp-2 min-w-0">
+                          >
                             {lesson.title}
                           </span>
                           {isActive && (
                             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-8 bg-primary" />
-                          )}
-                          {isCompleted && (
-                            <Check className="h-4 w-4 flex-shrink-0" />
                           )}
                         </Link>
                       );
