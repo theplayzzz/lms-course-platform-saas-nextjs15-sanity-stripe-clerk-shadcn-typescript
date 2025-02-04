@@ -17,7 +17,7 @@ export default async function CourseLayout({
   params,
 }: CourseLayoutProps) {
   const user = await currentUser();
-  const { courseId } = params;
+  const { courseId } = await params;
 
   const authResult = await checkCourseAccess(user?.id || null, courseId);
   if (!authResult.isAuthorized || !user?.id) {

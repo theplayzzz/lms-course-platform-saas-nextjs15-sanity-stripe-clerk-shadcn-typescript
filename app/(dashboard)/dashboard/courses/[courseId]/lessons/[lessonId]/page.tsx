@@ -17,7 +17,7 @@ interface LessonPageProps {
 
 export default async function LessonPage({ params }: LessonPageProps) {
   const user = await currentUser();
-  const { courseId, lessonId } = params;
+  const { courseId, lessonId } = await params;
 
   const authResult = await checkCourseAccess(user?.id || null, courseId);
 
