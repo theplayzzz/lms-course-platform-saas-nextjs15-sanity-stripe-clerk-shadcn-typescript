@@ -4,7 +4,6 @@ import { getLessonById } from "@/sanity/lib/lessons/getLessonById";
 import { PortableText } from "@portabletext/react";
 import { LoomEmbed } from "@/components/LoomEmbed";
 import { VideoPlayer } from "@/components/VideoPlayer";
-import { getLessonCompletions } from "@/sanity/lib/lessons/getLessonCompletions";
 import { LessonCompleteButton } from "@/components/LessonCompleteButton";
 
 interface LessonPageProps {
@@ -18,19 +17,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const user = await currentUser();
   const { courseId, lessonId } = await params;
 
-  const [lesson, completions] = await Promise.all([
-    getLessonById(lessonId),
-    // We check if user is logged in at layout level
-    getLessonCompletions(user!.id, courseId),
-  ]);
+  const lesson = await getLessonById(lessonId);
 
   if (!lesson) {
     return redirect(`/dashboard/courses/${courseId}`);
   }
-
-  const isCompleted = completions.completedLessons.some(
-    (completion) => completion.lesson?._id === lessonId
-  );
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -59,12 +50,13 @@ export default async function LessonPage({ params }: LessonPageProps) {
               </div>
             )}
 
-            <LessonCompleteButton
-              lessonId={lesson._id}
-              clerkId={user!.id}
-              courseId={courseId}
-              isCompleted={isCompleted}
-            />
+            <div className="flex justify-end">
+              <LessonCompleteButton
+                lessonId={lesson._id}
+                clerkId={user!.id}
+                courseId={courseId}
+              />
+            </div>
           </div>
         </div>
       </div>
