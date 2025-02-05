@@ -25,7 +25,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   if (!course) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 mt-16">
         <h1 className="text-4xl font-bold">Course not found</h1>
       </div>
     );
@@ -70,7 +70,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 md:min-w-[300px]">
               <div className="text-3xl font-bold text-white mb-4">
-                ${course.price}
+                {course.price === 0 ? "Free" : `$${course.price}`}
               </div>
               <EnrollButton courseId={course._id} isEnrolled={isEnrolled} />
             </div>

@@ -71,9 +71,15 @@ function EnrollButton({
       disabled={!user?.id || isPending}
       onClick={() => handleEnroll(courseId)}
     >
-      <span className={`${isPending ? "opacity-0" : "opacity-100"}`}>
-        {!user?.id ? "Sign in to Enroll" : "Enroll Now"}
-      </span>
+      {!user?.id ? (
+        <span className={`${isPending ? "opacity-0" : "opacity-100"}`}>
+          Sign in to Enroll
+        </span>
+      ) : (
+        <span className={`${isPending ? "opacity-0" : "opacity-100"}`}>
+          Enroll Now
+        </span>
+      )}
       {isPending && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin" />

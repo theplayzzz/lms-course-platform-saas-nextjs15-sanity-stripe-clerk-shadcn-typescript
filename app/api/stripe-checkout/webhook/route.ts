@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
 import { createEnrollment } from "@/sanity/lib/student/createEnrollment";
-import { revalidatePath } from "next/cache";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
@@ -60,9 +59,6 @@ export async function POST(req: Request) {
         paymentId: session.id,
         amount: session.amount_total! / 100, // Convert from cents to dollars
       });
-
-      // Revalidate the course page to update enrollment status
-      revalidatePath(`/courses/${courseId}`);
 
       return new NextResponse(null, { status: 200 });
     }

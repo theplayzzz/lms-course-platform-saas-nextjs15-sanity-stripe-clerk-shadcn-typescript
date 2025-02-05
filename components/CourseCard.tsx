@@ -49,10 +49,11 @@ export function CourseCard({ course, progress, href }: CourseCardProps) {
             </span>
             {"price" in course && typeof course.price === "number" && (
               <span className="text-white font-bold px-3 py-1 bg-black/50 dark:bg-white/20 rounded-full backdrop-blur-sm">
-                $
-                {course.price.toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                })}
+                {course.price === 0
+                  ? "Free"
+                  : `$${course.price.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                    })}`}
               </span>
             )}
           </div>
