@@ -7,34 +7,10 @@ export async function searchCourses(term: string) {
     description match $term + "*" ||
     category->name match $term + "*"
   )] {
-    _id,
-    _type,
-    _createdAt,
-    _updatedAt,
-    _rev,
-    title,
-    description,
-    price,
+    ...,
     "slug": slug.current,
-    image,
-    "category": category->{
-      name,
-      _id,
-      _type,
-      _createdAt,
-      _updatedAt,
-      _rev
-    },
-    "instructor": instructor->{
-      _id,
-      _type,
-      _createdAt,
-      _updatedAt,
-      _rev,
-      name,
-      photo,
-      bio
-    }
+    "category": category->{...},
+    "instructor": instructor->{...}
   }`);
 
   const result = await sanityFetch({

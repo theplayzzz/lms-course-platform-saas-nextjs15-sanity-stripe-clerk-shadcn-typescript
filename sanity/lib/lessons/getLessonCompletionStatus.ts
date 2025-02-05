@@ -15,8 +15,7 @@ export async function getLessonCompletionStatus(
 
   const completionStatusQuery =
     defineQuery(`*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0] {
-    _id,
-    completedAt
+    ...
   }`);
 
   const result = await sanityFetch({

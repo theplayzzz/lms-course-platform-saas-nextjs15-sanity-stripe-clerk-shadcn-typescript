@@ -7,27 +7,15 @@ export async function getLessonCompletions(
 ) {
   const getCompletionsQuery = defineQuery(`{
     "completedLessons": *[_type == "lessonCompletion" && student._ref == $studentId && course._ref == $courseId] {
-      _id,
-      completedAt,
-      "lesson": lesson->{
-        _id,
-        title
-      },
-      "module": module->{
-        _id,
-        title
-      }
+      ...,
+      "lesson": lesson->{...},
+      "module": module->{...}
     },
     "course": *[_type == "course" && _id == $courseId][0] {
-      _id,
-      title,
+      ...,
       "modules": modules[]-> {
-        _id,
-        title,
-        "lessons": lessons[]-> {
-          _id,
-          title
-        }
+        ...,
+        "lessons": lessons[]-> {...}
       }
     }
   }`);
