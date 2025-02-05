@@ -1,5 +1,6 @@
 import groq from "groq";
 import { client } from "../adminClient";
+import { sanityFetch } from "../live";
 
 interface CreateStudentProps {
   clerkId: string;
@@ -17,14 +18,14 @@ export async function createStudentIfNotExists({
   imageUrl,
 }: CreateStudentProps) {
   // First check if student exists
-  const existingStudent = await client.fetch(
-    groq`*[_type == "student" && clerkId == $clerkId][0]`,
-    { clerkId }
-  );
+  const existingStudentQuery = await sanityFetch({
+    query: groq`*[_type == "student" && clerkId == $clerkId][0]`,
+    params: { clerkId },
+  });
 
-  if (existingStudent) {
-    console.log("Student already exists");
-    return existingStudent;
+  if (existingStudentQuery.data) {
+    console.log("Student already exists", existingStudentQuery.data);
+    return existingStudentQuery.data;
   }
 
   // If no student exists, create a new one
@@ -36,6 +37,8 @@ export async function createStudentIfNotExists({
     lastName,
     imageUrl,
   });
+
+  console.log("New student created", newStudent);
 
   return newStudent;
 }
