@@ -7,6 +7,8 @@ import { urlFor } from "@/sanity/lib/image";
 import getCourseById from "@/sanity/lib/courses/getCourseById";
 import { createStudentIfNotExists } from "@/sanity/lib/student/createStudentIfNotExists";
 import { clerkClient } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { createEnrollment } from "@/sanity/lib/student/createEnrollment";
 
 export async function createStripeCheckout(courseId: string, userId: string) {
   try {
@@ -38,10 +40,23 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     }
 
     // 2. Validate course data and prepare price for Stripe
-    if (!course.price) {
+    if (!course.price && course.price !== 0) {
       throw new Error("Course price is not set");
     }
     const priceInCents = Math.round(course.price * 100);
+
+    // if course is free, create enrollment and redirect to course page (BYPASS STRIPE CHECKOUT)
+    if (priceInCents === 0) {
+      await createEnrollment({
+        studentId: user._id,
+        courseId: course._id,
+        paymentId: "free",
+        amount: 0,
+      });
+      revalidatePath(`/my-courses`);
+      revalidatePath(`/courses/${course.slug?.current}`);
+      return { url: `/courses/${course.slug?.current}` };
+    }
 
     const { title, description, image, slug } = course;
 
@@ -66,7 +81,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
         },
       ],
       mode: "payment",
-      success_url: `${baseUrl}/courses/${slug.current}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/courses/${slug.current}`,
       cancel_url: `${baseUrl}/courses/${slug.current}?canceled=true`,
       metadata: {
         courseId: course._id,

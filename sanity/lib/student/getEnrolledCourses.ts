@@ -1,5 +1,5 @@
 import { defineQuery } from "groq";
-import { client } from "../adminClient";
+import { sanityFetch } from "../live";
 
 export async function getEnrolledCourses(clerkId: string) {
   const getEnrolledCoursesQuery =
@@ -25,9 +25,10 @@ export async function getEnrolledCourses(clerkId: string) {
     }
   }`);
 
-  const result = await client.fetch(getEnrolledCoursesQuery, {
-    clerkId,
+  const result = await sanityFetch({
+    query: getEnrolledCoursesQuery,
+    params: { clerkId },
   });
 
-  return result?.enrolledCourses || [];
+  return result?.data?.enrolledCourses || [];
 }

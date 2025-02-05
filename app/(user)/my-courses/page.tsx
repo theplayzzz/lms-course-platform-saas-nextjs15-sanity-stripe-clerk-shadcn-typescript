@@ -6,6 +6,8 @@ import { GraduationCap } from "lucide-react";
 import { getModuleProgress } from "@/sanity/lib/lessons/getModuleProgress";
 import { CourseCard } from "@/components/CourseCard";
 
+export const dynamic = "force-dynamic";
+
 export default async function MyCoursesPage() {
   const user = await currentUser();
 

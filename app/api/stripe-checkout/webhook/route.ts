@@ -1,8 +1,9 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { client } from "@/sanity/lib/adminClient";
 import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
+import { createEnrollment } from "@/sanity/lib/student/createEnrollment";
+import { revalidatePath } from "next/cache";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
@@ -53,20 +54,15 @@ export async function POST(req: Request) {
       }
 
       // Create an enrollment record in Sanity
-      await client.create({
-        _type: "enrollment",
-        student: {
-          _type: "reference",
-          _ref: student._id,
-        },
-        course: {
-          _type: "reference",
-          _ref: courseId,
-        },
+      await createEnrollment({
+        studentId: student._id,
+        courseId,
         paymentId: session.id,
         amount: session.amount_total! / 100, // Convert from cents to dollars
-        enrolledAt: new Date().toISOString(),
       });
+
+      // Revalidate the course page to update enrollment status
+      revalidatePath(`/courses/${courseId}`);
 
       return new NextResponse(null, { status: 200 });
     }

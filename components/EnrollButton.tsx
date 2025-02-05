@@ -1,46 +1,28 @@
 "use client";
 
 import { createStripeCheckout } from "@/actions/createStripeCheckout";
-import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { useUser } from "@clerk/nextjs";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 
-function EnrollButton({ courseId }: { courseId: string }) {
+function EnrollButton({
+  courseId,
+  isEnrolled,
+}: {
+  courseId: string;
+  isEnrolled: boolean;
+}) {
   const { user, isLoaded: isUserLoaded } = useUser();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [isEnrolled, setIsEnrolled] = useState(false);
-
-  useEffect(() => {
-    if (!isUserLoaded) return;
-
-    startTransition(async () => {
-      if (!user?.id) return;
-
-      try {
-        const enrolled = await isEnrolledInCourse(user.id, courseId);
-        setIsEnrolled(enrolled);
-      } catch (error) {
-        console.error("Error checking enrollment:", error);
-      }
-    });
-  }, [user?.id, courseId, isUserLoaded]);
 
   const handleEnroll = async (courseId: string) => {
     startTransition(async () => {
       try {
         const userId = user?.id;
         if (!userId) return;
-
-        // Double-check enrollment status before proceeding
-        const enrolled = await isEnrolledInCourse(userId, courseId);
-        if (enrolled) {
-          setIsEnrolled(true);
-          return;
-        }
 
         const { url } = await createStripeCheckout(courseId, userId);
         if (url) {
@@ -53,7 +35,7 @@ function EnrollButton({ courseId }: { courseId: string }) {
     });
   };
 
-  // Show loading state while checking enrollment or user is loading
+  // Show loading state while checking user is loading
   if (!isUserLoaded || isPending) {
     return (
       <div className="w-full h-12 rounded-lg bg-gray-100 flex items-center justify-center">

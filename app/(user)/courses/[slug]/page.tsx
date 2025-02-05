@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import EnrollButton from "@/components/EnrollButton";
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
+import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
+import { auth } from "@clerk/nextjs/server";
 
 interface CoursePageProps {
   params: Promise<{
@@ -14,6 +16,12 @@ interface CoursePageProps {
 export default async function CoursePage({ params }: CoursePageProps) {
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
+  const { userId } = await auth();
+
+  const isEnrolled =
+    userId && course?._id
+      ? await isEnrolledInCourse(userId, course._id)
+      : false;
 
   if (!course) {
     return (
@@ -64,7 +72,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
               <div className="text-3xl font-bold text-white mb-4">
                 ${course.price}
               </div>
-              <EnrollButton courseId={course._id} />
+              <EnrollButton courseId={course._id} isEnrolled={isEnrolled} />
             </div>
           </div>
         </div>
