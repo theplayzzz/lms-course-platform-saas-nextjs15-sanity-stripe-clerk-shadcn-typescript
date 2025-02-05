@@ -12,13 +12,11 @@ import { cn } from "@/lib/utils";
 interface LessonCompleteButtonProps {
   lessonId: string;
   clerkId: string;
-  courseId: string;
 }
 
 export function LessonCompleteButton({
   lessonId,
   clerkId,
-  courseId,
 }: LessonCompleteButtonProps) {
   const [isPending, setIsPending] = useState(false);
   const [isCompleted, setIsCompleted] = useState<boolean | null>(null);
@@ -41,9 +39,9 @@ export function LessonCompleteButton({
     try {
       setIsPending(true);
       if (isCompleted) {
-        await uncompleteLessonAction(lessonId, clerkId, courseId);
+        await uncompleteLessonAction(lessonId, clerkId);
       } else {
-        await completeLessonAction(lessonId, clerkId, courseId);
+        await completeLessonAction(lessonId, clerkId);
       }
 
       startTransition(async () => {

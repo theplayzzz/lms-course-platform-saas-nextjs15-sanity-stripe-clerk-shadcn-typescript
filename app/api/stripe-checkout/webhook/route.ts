@@ -48,13 +48,13 @@ export async function POST(req: Request) {
 
       const student = await getStudentByClerkId(userId);
 
-      if (!student) {
+      if (!student.data) {
         return new NextResponse("Student not found", { status: 400 });
       }
 
       // Create an enrollment record in Sanity
       await createEnrollment({
-        studentId: student._id,
+        studentId: student.data._id,
         courseId,
         paymentId: session.id,
         amount: session.amount_total! / 100, // Convert from cents to dollars

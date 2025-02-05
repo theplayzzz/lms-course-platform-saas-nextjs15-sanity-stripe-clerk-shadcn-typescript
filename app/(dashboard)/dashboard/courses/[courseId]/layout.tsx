@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import getCourseById from "@/sanity/lib/courses/getCourseById";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { getModuleProgress } from "@/sanity/lib/lessons/getModuleProgress";
+import { getCourseProgress } from "@/sanity/lib/lessons/getCourseProgress";
 import { checkCourseAccess } from "@/lib/auth";
 
 interface CourseLayoutProps {
@@ -30,7 +30,7 @@ export default async function CourseLayout({
 
   const [course, progress] = await Promise.all([
     getCourseById(courseId),
-    getModuleProgress(user.id, courseId),
+    getCourseProgress(user.id, courseId),
   ]);
 
   if (!course) {

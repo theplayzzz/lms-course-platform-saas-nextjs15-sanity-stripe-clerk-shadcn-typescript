@@ -342,7 +342,27 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | LessonCompletion | Enrollment | Student | BlockContent | Lesson | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
+export type AllSanitySchemaTypes =
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityFileAsset
+  | Geopoint
+  | LessonCompletion
+  | Enrollment
+  | Student
+  | BlockContent
+  | Lesson
+  | Module
+  | Course
+  | Instructor
+  | Category
+  | SanityImageCrop
+  | SanityImageHotspot
+  | SanityImageAsset
+  | SanityAssetSourceData
+  | SanityImageMetadata
+  | Slug;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: sanity/lib/courses/getCourseById.ts
 // Variable: getCourseByIdQuery
@@ -405,7 +425,15 @@ export type GetCourseByIdQueryResult = {
           _type: "span";
           _key: string;
         }>;
-        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+        style?:
+          | "blockquote"
+          | "h1"
+          | "h2"
+          | "h3"
+          | "h4"
+          | "h5"
+          | "h6"
+          | "normal";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
           href?: string;
@@ -501,7 +529,15 @@ export type GetCourseBySlugQueryResult = {
           _type: "span";
           _key: string;
         }>;
-        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+        style?:
+          | "blockquote"
+          | "h1"
+          | "h2"
+          | "h3"
+          | "h4"
+          | "h5"
+          | "h6"
+          | "normal";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
           href?: string;
@@ -771,7 +807,15 @@ export type GetCompletionsQueryResult = {
           _type: "span";
           _key: string;
         }>;
-        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+        style?:
+          | "blockquote"
+          | "h1"
+          | "h2"
+          | "h3"
+          | "h4"
+          | "h5"
+          | "h6"
+          | "normal";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
           href?: string;
@@ -858,7 +902,15 @@ export type GetCompletionsQueryResult = {
             _type: "span";
             _key: string;
           }>;
-          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+          style?:
+            | "blockquote"
+            | "h1"
+            | "h2"
+            | "h3"
+            | "h4"
+            | "h5"
+            | "h6"
+            | "normal";
           listItem?: "bullet" | "number";
           markDefs?: Array<{
             href?: string;
@@ -880,7 +932,7 @@ export type GetCompletionsQueryResult = {
   } | null;
 };
 
-// Source: sanity/lib/lessons/getModuleProgress.ts
+// Source: sanity/lib/lessons/getCourseProgress.ts
 // Variable: progressQuery
 // Query: {    "completedLessons": *[_type == "lessonCompletion" && student._ref == $studentId && course._ref == $courseId] {      ...,      "lesson": lesson->{...},      "module": module->{...}    },    "course": *[_type == "course" && _id == $courseId][0] {      ...,      "modules": modules[]-> {        ...,        "lessons": lessons[]-> {...}      }    }  }
 export type ProgressQueryResult = {
@@ -914,7 +966,15 @@ export type ProgressQueryResult = {
           _type: "span";
           _key: string;
         }>;
-        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+        style?:
+          | "blockquote"
+          | "h1"
+          | "h2"
+          | "h3"
+          | "h4"
+          | "h5"
+          | "h6"
+          | "normal";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
           href?: string;
@@ -1001,7 +1061,15 @@ export type ProgressQueryResult = {
             _type: "span";
             _key: string;
           }>;
-          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+          style?:
+            | "blockquote"
+            | "h1"
+            | "h2"
+            | "h3"
+            | "h4"
+            | "h5"
+            | "h6"
+            | "normal";
           listItem?: "bullet" | "number";
           markDefs?: Array<{
             href?: string;
@@ -1155,16 +1223,18 @@ export type EnrollmentQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"course\" && _id == $id][0] {\n      ...,  // Spread all course fields\n      \"category\": category->{...},  // Expand the category reference, including all its fields\n      \"instructor\": instructor->{...},  // Expand the instructor reference, including all its fields\n      \"modules\": modules[]-> {  // Expand the array of module references\n        ...,  // Include all module fields\n        \"lessons\": lessons[]-> {...}  // For each module, expand its array of lesson references\n      }\n    }": GetCourseByIdQueryResult;
-    "*[_type == \"course\" && slug.current == $slug][0] {\n      ...,\n      \"category\": category->{...},\n      \"instructor\": instructor->{...},\n      \"modules\": modules[]-> {\n        ...,\n        \"lessons\": lessons[]-> {...}\n      }\n    }": GetCourseBySlugQueryResult;
-    "*[_type == \"course\"] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...}\n  }": GetCoursesQueryResult;
-    "*[_type == \"course\" && (\n    title match $term + \"*\" ||\n    description match $term + \"*\" ||\n    category->name match $term + \"*\"\n  )] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...}\n  }": SearchQueryResult;
-    "*[_type == \"lesson\" && _id == $id][0] {\n    ...,\n    \"module\": module->{\n      ...,\n      \"course\": course->{...}\n    }\n  }": GetLessonByIdQueryResult;
-    "*[_type == \"lessonCompletion\" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }": CompletionStatusQueryResult;
-    "{\n    \"completedLessons\": *[_type == \"lessonCompletion\" && student._ref == $studentId && course._ref == $courseId] {\n      ...,\n      \"lesson\": lesson->{...},\n      \"module\": module->{...}\n    },\n    \"course\": *[_type == \"course\" && _id == $courseId][0] {\n      ...,\n      \"modules\": modules[]-> {\n        ...,\n        \"lessons\": lessons[]-> {...}\n      }\n    }\n  }": GetCompletionsQueryResult | ProgressQueryResult;
-    "*[_type == \"student\" && clerkId == $clerkId][0] {\n    \"enrolledCourses\": *[_type == \"enrollment\" && student._ref == ^._id] {\n      ...,\n      \"course\": course-> {\n        ...,\n        \"slug\": slug.current,\n        \"category\": category->{...},\n        \"instructor\": instructor->{...}\n      }\n    }\n  }": GetEnrolledCoursesQueryResult;
-    "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
-    "*[_type == \"student\" && clerkId == $clerkId][0]._id": StudentQueryResult;
-    "*[_type == \"enrollment\" && student._ref == $studentId && course._ref == $courseId][0]": EnrollmentQueryResult;
+    '*[_type == "course" && _id == $id][0] {\n      ...,  // Spread all course fields\n      "category": category->{...},  // Expand the category reference, including all its fields\n      "instructor": instructor->{...},  // Expand the instructor reference, including all its fields\n      "modules": modules[]-> {  // Expand the array of module references\n        ...,  // Include all module fields\n        "lessons": lessons[]-> {...}  // For each module, expand its array of lesson references\n      }\n    }': GetCourseByIdQueryResult;
+    '*[_type == "course" && slug.current == $slug][0] {\n      ...,\n      "category": category->{...},\n      "instructor": instructor->{...},\n      "modules": modules[]-> {\n        ...,\n        "lessons": lessons[]-> {...}\n      }\n    }': GetCourseBySlugQueryResult;
+    '*[_type == "course"] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...}\n  }': GetCoursesQueryResult;
+    '*[_type == "course" && (\n    title match $term + "*" ||\n    description match $term + "*" ||\n    category->name match $term + "*"\n  )] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...}\n  }': SearchQueryResult;
+    '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    "module": module->{\n      ...,\n      "course": course->{...}\n    }\n  }': GetLessonByIdQueryResult;
+    '*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }': CompletionStatusQueryResult;
+    '{\n    "completedLessons": *[_type == "lessonCompletion" && student._ref == $studentId && course._ref == $courseId] {\n      ...,\n      "lesson": lesson->{...},\n      "module": module->{...}\n    },\n    "course": *[_type == "course" && _id == $courseId][0] {\n      ...,\n      "modules": modules[]-> {\n        ...,\n        "lessons": lessons[]-> {...}\n      }\n    }\n  }':
+      | GetCompletionsQueryResult
+      | ProgressQueryResult;
+    '*[_type == "student" && clerkId == $clerkId][0] {\n    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {\n      ...,\n      "course": course-> {\n        ...,\n        "slug": slug.current,\n        "category": category->{...},\n        "instructor": instructor->{...}\n      }\n    }\n  }': GetEnrolledCoursesQueryResult;
+    '*[_type == "student" && clerkId == $clerkId][0]': GetStudentByClerkIdQueryResult;
+    '*[_type == "student" && clerkId == $clerkId][0]._id': StudentQueryResult;
+    '*[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]': EnrollmentQueryResult;
   }
 }

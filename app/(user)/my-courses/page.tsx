@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getEnrolledCourses } from "@/sanity/lib/student/getEnrolledCourses";
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
-import { getModuleProgress } from "@/sanity/lib/lessons/getModuleProgress";
+import { getCourseProgress } from "@/sanity/lib/lessons/getCourseProgress";
 import { CourseCard } from "@/components/CourseCard";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +21,7 @@ export default async function MyCoursesPage() {
   const coursesWithProgress = await Promise.all(
     enrolledCourses.map(async ({ course }) => {
       if (!course) return null;
-      const progress = await getModuleProgress(user.id, course._id);
+      const progress = await getCourseProgress(user.id, course._id);
       return {
         course,
         progress: progress.courseProgress,

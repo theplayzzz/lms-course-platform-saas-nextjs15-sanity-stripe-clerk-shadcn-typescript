@@ -9,7 +9,7 @@ export async function getLessonCompletionStatus(
   // First get the student's Sanity ID
   const student = await getStudentByClerkId(clerkId);
 
-  if (!student?._id) {
+  if (!student?.data?._id) {
     throw new Error("Student not found");
   }
 
@@ -20,7 +20,7 @@ export async function getLessonCompletionStatus(
 
   const result = await sanityFetch({
     query: completionStatusQuery,
-    params: { studentId: student._id, lessonId },
+    params: { studentId: student.data._id, lessonId },
   });
 
   return result.data !== null;

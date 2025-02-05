@@ -8,26 +8,6 @@ export function calculateTotalLessons(modules: Module[] | null): number {
   );
 }
 
-export function calculateModuleProgress(
-  module: Module,
-  completedLessons: GetCompletionsQueryResult["completedLessons"]
-) {
-  const totalLessons = module.lessons?.length || 0;
-  const completedInModule = completedLessons.filter(
-    (completion) => completion.module?._id === module._id
-  ).length;
-
-  return {
-    moduleId: module._id,
-    title: module.title || "",
-    progress: Math.round(
-      totalLessons > 0 ? (completedInModule / totalLessons) * 100 : 0
-    ),
-    completedLessons: completedInModule,
-    totalLessons,
-  };
-}
-
 export function calculateCourseProgress(
   modules: Module[] | null,
   completedLessons: GetCompletionsQueryResult["completedLessons"]

@@ -7,7 +7,6 @@ import { urlFor } from "@/sanity/lib/image";
 import getCourseById from "@/sanity/lib/courses/getCourseById";
 import { createStudentIfNotExists } from "@/sanity/lib/student/createStudentIfNotExists";
 import { clerkClient } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
 import { createEnrollment } from "@/sanity/lib/student/createEnrollment";
 
 export async function createStripeCheckout(courseId: string, userId: string) {
@@ -53,8 +52,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
         paymentId: "free",
         amount: 0,
       });
-      revalidatePath(`/my-courses`);
-      revalidatePath(`/courses/${course.slug?.current}`);
+
       return { url: `/courses/${course.slug?.current}` };
     }
 
