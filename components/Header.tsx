@@ -1,3 +1,5 @@
+"use client";
+
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { BookMarkedIcon, BookOpen } from "lucide-react";
 import Link from "next/link";
