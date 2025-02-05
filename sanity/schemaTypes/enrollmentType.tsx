@@ -50,8 +50,8 @@ export const enrollmentType = defineType({
     },
     prepare({ courseTitle, studentFirstName, studentLastName, studentImage }) {
       return {
-        title: courseTitle,
-        subtitle: `${studentFirstName} ${studentLastName}`,
+        title: `${studentFirstName} ${studentLastName}`,
+        subtitle: courseTitle,
         media: (
           <Image
             src={studentImage}

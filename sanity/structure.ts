@@ -137,12 +137,6 @@ export const structure = (S: StructureBuilder) =>
         .child(
           S.list()
             .title("System Management")
-            .items([
-              S.documentTypeListItem("enrollment").title("Enrollments"),
-              S.documentTypeListItem("category").title("Categories"),
-              S.documentTypeListItem("lessonCompletion")
-                .title("Lesson Completions")
-                .schemaType("lessonCompletion"),
-            ])
+            .items([S.documentTypeListItem("category").title("Categories")])
         ),
     ]);
