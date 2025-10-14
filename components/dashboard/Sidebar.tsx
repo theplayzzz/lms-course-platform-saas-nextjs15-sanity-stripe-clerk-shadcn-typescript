@@ -66,14 +66,16 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
     setIsMounted(true);
   }, []);
 
+  const progress = course
+    ? calculateCourseProgress(
+        course.modules as unknown as Module[],
+        completedLessons
+      )
+    : { completedLessons: 0, totalLessons: 0, percentage: 0 };
+
   if (!course || !isMounted) {
     return null;
   }
-
-  const progress = calculateCourseProgress(
-    course.modules as unknown as Module[],
-    completedLessons
-  );
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col">
